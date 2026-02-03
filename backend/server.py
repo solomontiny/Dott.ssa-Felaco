@@ -97,7 +97,7 @@ async def create_consultation(consultation: ConsultationRequest):
         doc = consultation.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         
-        result = await db.consultations.insert_one(doc)
+        await db.consultations.insert_one(doc)
         
         # Here you would send WhatsApp notification
         # For now, we'll log it
