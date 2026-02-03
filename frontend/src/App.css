@@ -10,6 +10,12 @@ body {
   text-align: left;
 }
 
+/* Hide Emergent Badge */
+#emergent-badge {
+  display: none !important;
+  visibility: hidden !important;
+}
+
 /* Ensure no unwanted transitions on transforms */
 * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, filter, backdrop-filter;
