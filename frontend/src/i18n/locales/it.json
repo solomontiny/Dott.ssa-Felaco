@@ -1,0 +1,135 @@
+{
+  "nav": {
+    "home": "HOME",
+    "about": "CHI SONO",
+    "services": "SERVIZI",
+    "consultation": "CONSULENZA GRATUITA",
+    "appointment": "PRENOTA",
+    "blog": "ARTICOLI",
+    "contact": "CONTATTI"
+  },
+  "hero": {
+    "subtitle": "BIOLOGA NUTRIZIONISTA",
+    "title": "Benvenuti",
+    "titleHighlight": "nel mio mondo",
+    "description": "Qui troverai tre focus principali, volti a incuriosire e stimolare Mente e Corpo, per una soluzione di ristrutturazione globale a lungo termine",
+    "cta1": "Scopri il mio metodo",
+    "cta2": "Chi sono"
+  },
+  "focus": {
+    "sectionTitle": "Il mio approccio",
+    "mainTitle": "Tre focus principali",
+    "one": {
+      "number": "UNO",
+      "title": "Conoscenza",
+      "description": "Conoscenza e consapevolezza del proprio corpo e della propria mente, in rapporto al cibo"
+    },
+    "two": {
+      "number": "DUE",
+      "title": "Metodi",
+      "description": "Metodi, strategie e training di lavoro, per arrivare ad una conoscenza propria e per avere percorsi individualizzati e personalizzati"
+    },
+    "three": {
+      "number": "TRE",
+      "title": "Movimento",
+      "description": "Movimento, attività fisica e sport volti a stabilire una connessione fisica e mentale, per un benessere esterno ma anche interno"
+    }
+  },
+  "about": {
+    "label": "CHI SONO",
+    "title": "Dott.ssa Felaco",
+    "titleHighlight": "Giuseppina",
+    "intro": "Sono la dott.ssa Felaco Giuseppina,",
+    "text1": "biologa nutrizionista, curiosa ricercatrice in ambito alimentare e della natura.",
+    "text2": "Insegno sostegno in una scuola secondaria di primo grado, sono un'amante spassionata per il metodo educativo didattico.",
+    "text3": "Dono con amore e piacere strumenti metodologici ai miei studenti, al fine di poter dar loro degli input, che possano servir loro a migliorare la crescita con semplicità e serenità.",
+    "text4": "Il mio modus operandi è quello di aiutare le persone a costruire il proprio benessere psico-fisico, ed è per questo che mi occupo di prevenzione e divulgazione rivolta al prossimo.",
+    "quote1": "La salute vien dalla conoscenza ed il sapere viene da una guida esterna.",
+    "quote2": "Noi siamo ciò che mangiamo, diciamo e facciamo!"
+  },
+  "services": {
+    "label": "SERVIZI",
+    "title": "Cosa trovi qui",
+    "subtitle": "Benessere Bio-Psico-Sociale",
+    "heading": "Supporto",
+    "description": "Come \"cambiare vita\" partendo da tre concetti fondamentali:",
+    "service1": {
+      "title": "Training educativo alimentare",
+      "description": "Cambiare attraverso la conoscenza del cibo"
+    },
+    "service2": {
+      "title": "Training emotivo didattico",
+      "description": "Cambiare mediante la consapevolezza emotiva"
+    },
+    "service3": {
+      "title": "Workout specifici",
+      "description": "Cambiare con attività fisica individualizzata"
+    },
+    "cta": "Vai agli articoli"
+  },
+  "blog": {
+    "label": "BLOG",
+    "title": "Ultimi articoli",
+    "cta": "Vedi tutti gli articoli",
+    "categories": "Categorie"
+  },
+  "consultation": {
+    "title": "Consulenza Online Gratuita",
+    "subtitle": "Ricevi una consulenza personalizzata",
+    "description": "Compila il modulo e ti contatteremo entro 24 ore per una consulenza gratuita.",
+    "form": {
+      "name": "Nome completo",
+      "email": "Email",
+      "phone": "Telefono",
+      "message": "Descrivi la tua situazione",
+      "consent": "Acconsento al trattamento dei dati personali",
+      "submit": "Richiedi Consulenza",
+      "success": "Richiesta inviata con successo!",
+      "error": "Errore nell'invio. Riprova."
+    }
+  },
+  "appointment": {
+    "title": "Prenota Appuntamento",
+    "subtitle": "Scegli data, ora e tipo di consulenza",
+    "form": {
+      "name": "Nome completo",
+      "email": "Email",
+      "phone": "Telefono",
+      "date": "Seleziona data",
+      "time": "Seleziona orario",
+      "type": "Tipo di consulenza",
+      "types": {
+        "initial": "Consulenza iniziale",
+        "followup": "Follow-up",
+        "nutrition": "Piano nutrizionale",
+        "sports": "Nutrizione sportiva"
+      },
+      "notes": "Note aggiuntive",
+      "submit": "Conferma Appuntamento",
+      "success": "Appuntamento confermato!",
+      "error": "Errore nella prenotazione. Riprova."
+    }
+  },
+  "testimonials": {
+    "title": "Cosa dicono i miei clienti",
+    "subtitle": "Esperienze reali di trasformazione"
+  },
+  "cta": {
+    "label": "Non aspettare",
+    "title": "Non esitare a sceglierti oggi",
+    "subtitle": "Perché domani non sarà prevenzione, ma cura!",
+    "primary": "Contattami ora",
+    "secondary": "Scopri di più"
+  },
+  "footer": {
+    "description": "Biologa nutrizionista dedicata al benessere psico-fisico attraverso alimentazione consapevole, educazione e movimento.",
+    "links": "Link Utili",
+    "contact": "Contatti",
+    "copyright": "© 2026 Dott.ssa Felaco Giuseppina. Tutti i diritti riservati.",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy"
+  },
+  "whatsapp": {
+    "message": "Ciao! Come posso aiutarti?"
+  }
+}

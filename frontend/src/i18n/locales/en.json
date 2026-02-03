@@ -1,0 +1,135 @@
+{
+  "nav": {
+    "home": "HOME",
+    "about": "ABOUT",
+    "services": "SERVICES",
+    "consultation": "FREE CONSULTATION",
+    "appointment": "BOOK NOW",
+    "blog": "BLOG",
+    "contact": "CONTACT"
+  },
+  "hero": {
+    "subtitle": "NUTRITIONIST BIOLOGIST",
+    "title": "Welcome",
+    "titleHighlight": "to my world",
+    "description": "Here you will find three main focuses, aimed at stimulating Mind and Body, for a comprehensive long-term restructuring solution",
+    "cta1": "Discover my method",
+    "cta2": "About me"
+  },
+  "focus": {
+    "sectionTitle": "My approach",
+    "mainTitle": "Three main focuses",
+    "one": {
+      "number": "ONE",
+      "title": "Knowledge",
+      "description": "Knowledge and awareness of your body and mind in relation to food"
+    },
+    "two": {
+      "number": "TWO",
+      "title": "Methods",
+      "description": "Methods, strategies and training to achieve self-knowledge and personalized pathways"
+    },
+    "three": {
+      "number": "THREE",
+      "title": "Movement",
+      "description": "Physical activity and sports to establish a physical and mental connection for external and internal well-being"
+    }
+  },
+  "about": {
+    "label": "ABOUT ME",
+    "title": "Dr. Felaco",
+    "titleHighlight": "Giuseppina",
+    "intro": "I am Dr. Felaco Giuseppina,",
+    "text1": "nutritionist biologist, curious researcher in food and nature.",
+    "text2": "I teach support in a middle school, passionate about educational and didactic methods.",
+    "text3": "I provide methodological tools with love and pleasure to help growth with simplicity and serenity.",
+    "text4": "My modus operandi is to help people build their psycho-physical well-being through prevention and education.",
+    "quote1": "Health comes from knowledge and wisdom comes from external guidance.",
+    "quote2": "We are what we eat, say and do!"
+  },
+  "services": {
+    "label": "SERVICES",
+    "title": "What you'll find",
+    "subtitle": "Bio-Psycho-Social Well-being",
+    "heading": "Support",
+    "description": "How to \"change life\" starting from three fundamental concepts:",
+    "service1": {
+      "title": "Food education training",
+      "description": "Change through food knowledge"
+    },
+    "service2": {
+      "title": "Emotional didactic training",
+      "description": "Change through emotional awareness"
+    },
+    "service3": {
+      "title": "Specific workouts",
+      "description": "Change with individualized physical activity"
+    },
+    "cta": "Go to articles"
+  },
+  "blog": {
+    "label": "BLOG",
+    "title": "Latest articles",
+    "cta": "View all articles",
+    "categories": "Categories"
+  },
+  "consultation": {
+    "title": "Free Online Consultation",
+    "subtitle": "Get personalized advice",
+    "description": "Fill out the form and we'll contact you within 24 hours for a free consultation.",
+    "form": {
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Describe your situation",
+      "consent": "I consent to the processing of personal data",
+      "submit": "Request Consultation",
+      "success": "Request sent successfully!",
+      "error": "Error sending. Please try again."
+    }
+  },
+  "appointment": {
+    "title": "Book Appointment",
+    "subtitle": "Choose date, time and consultation type",
+    "form": {
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "date": "Select date",
+      "time": "Select time",
+      "type": "Consultation type",
+      "types": {
+        "initial": "Initial consultation",
+        "followup": "Follow-up",
+        "nutrition": "Nutrition plan",
+        "sports": "Sports nutrition"
+      },
+      "notes": "Additional notes",
+      "submit": "Confirm Appointment",
+      "success": "Appointment confirmed!",
+      "error": "Booking error. Please try again."
+    }
+  },
+  "testimonials": {
+    "title": "What my clients say",
+    "subtitle": "Real transformation experiences"
+  },
+  "cta": {
+    "label": "Don't wait",
+    "title": "Don't hesitate to choose yourself today",
+    "subtitle": "Because tomorrow won't be prevention, but cure!",
+    "primary": "Contact me now",
+    "secondary": "Learn more"
+  },
+  "footer": {
+    "description": "Nutritionist biologist dedicated to psycho-physical well-being through conscious nutrition, education and movement.",
+    "links": "Useful Links",
+    "contact": "Contact",
+    "copyright": "© 2026 Dr. Felaco Giuseppina. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy"
+  },
+  "whatsapp": {
+    "message": "Hello! How can I help you?"
+  }
+}

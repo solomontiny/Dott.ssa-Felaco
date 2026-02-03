@@ -1,0 +1,135 @@
+{
+  "nav": {
+    "home": "ACCUEIL",
+    "about": "À PROPOS",
+    "services": "SERVICES",
+    "consultation": "CONSULTATION GRATUITE",
+    "appointment": "RÉSERVER",
+    "blog": "BLOG",
+    "contact": "CONTACT"
+  },
+  "hero": {
+    "subtitle": "BIOLOGISTE NUTRITIONNISTE",
+    "title": "Bienvenue",
+    "titleHighlight": "dans mon monde",
+    "description": "Ici vous trouverez trois axes principaux, visant à stimuler l'Esprit et le Corps, pour une solution de restructuration globale à long terme",
+    "cta1": "Découvrez ma méthode",
+    "cta2": "À propos"
+  },
+  "focus": {
+    "sectionTitle": "Mon approche",
+    "mainTitle": "Trois axes principaux",
+    "one": {
+      "number": "UN",
+      "title": "Connaissance",
+      "description": "Connaissance et conscience de votre corps et esprit par rapport à la nourriture"
+    },
+    "two": {
+      "number": "DEUX",
+      "title": "Méthodes",
+      "description": "Méthodes, stratégies et formations pour atteindre la connaissance de soi et des parcours personnalisés"
+    },
+    "three": {
+      "number": "TROIS",
+      "title": "Mouvement",
+      "description": "Activité physique et sport pour établir une connexion physique et mentale pour un bien-être externe et interne"
+    }
+  },
+  "about": {
+    "label": "À PROPOS",
+    "title": "Dr. Felaco",
+    "titleHighlight": "Giuseppina",
+    "intro": "Je suis Dr. Felaco Giuseppina,",
+    "text1": "biologiste nutritionniste, chercheuse curieuse en alimentation et nature.",
+    "text2": "J'enseigne le soutien dans un collège, passionnée par les méthodes éducatives et didactiques.",
+    "text3": "Je fournis des outils méthodologiques avec amour et plaisir pour aider la croissance avec simplicité et sérénité.",
+    "text4": "Mon modus operandi est d'aider les gens à construire leur bien-être psycho-physique par la prévention et l'éducation.",
+    "quote1": "La santé vient de la connaissance et la sagesse vient d'un guide externe.",
+    "quote2": "Nous sommes ce que nous mangeons, disons et faisons!"
+  },
+  "services": {
+    "label": "SERVICES",
+    "title": "Ce que vous trouverez",
+    "subtitle": "Bien-être Bio-Psycho-Social",
+    "heading": "Soutien",
+    "description": "Comment \"changer de vie\" en partant de trois concepts fondamentaux:",
+    "service1": {
+      "title": "Formation en éducation alimentaire",
+      "description": "Changer par la connaissance alimentaire"
+    },
+    "service2": {
+      "title": "Formation didactique émotionnelle",
+      "description": "Changer par la conscience émotionnelle"
+    },
+    "service3": {
+      "title": "Entraînements spécifiques",
+      "description": "Changer avec une activité physique individualisée"
+    },
+    "cta": "Voir les articles"
+  },
+  "blog": {
+    "label": "BLOG",
+    "title": "Derniers articles",
+    "cta": "Voir tous les articles",
+    "categories": "Catégories"
+  },
+  "consultation": {
+    "title": "Consultation en ligne gratuite",
+    "subtitle": "Obtenez des conseils personnalisés",
+    "description": "Remplissez le formulaire et nous vous contacterons dans les 24 heures pour une consultation gratuite.",
+    "form": {
+      "name": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "message": "Décrivez votre situation",
+      "consent": "Je consens au traitement des données personnelles",
+      "submit": "Demander une consultation",
+      "success": "Demande envoyée avec succès!",
+      "error": "Erreur d'envoi. Veuillez réessayer."
+    }
+  },
+  "appointment": {
+    "title": "Prendre rendez-vous",
+    "subtitle": "Choisissez la date, l'heure et le type de consultation",
+    "form": {
+      "name": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "date": "Sélectionner la date",
+      "time": "Sélectionner l'heure",
+      "type": "Type de consultation",
+      "types": {
+        "initial": "Consultation initiale",
+        "followup": "Suivi",
+        "nutrition": "Plan nutritionnel",
+        "sports": "Nutrition sportive"
+      },
+      "notes": "Notes supplémentaires",
+      "submit": "Confirmer le rendez-vous",
+      "success": "Rendez-vous confirmé!",
+      "error": "Erreur de réservation. Veuillez réessayer."
+    }
+  },
+  "testimonials": {
+    "title": "Ce que disent mes clients",
+    "subtitle": "Expériences de transformation réelles"
+  },
+  "cta": {
+    "label": "N'attendez pas",
+    "title": "N'hésitez pas à vous choisir aujourd'hui",
+    "subtitle": "Car demain ce ne sera pas de la prévention, mais un traitement!",
+    "primary": "Contactez-moi maintenant",
+    "secondary": "En savoir plus"
+  },
+  "footer": {
+    "description": "Biologiste nutritionniste dédiée au bien-être psycho-physique par une nutrition consciente, l'éducation et le mouvement.",
+    "links": "Liens utiles",
+    "contact": "Contact",
+    "copyright": "© 2026 Dr. Felaco Giuseppina. Tous droits réservés.",
+    "privacy": "Politique de confidentialité",
+    "cookies": "Politique des cookies"
+  },
+  "whatsapp": {
+    "message": "Bonjour! Comment puis-je vous aider?"
+  }
+}
