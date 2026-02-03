@@ -1,32 +1,68 @@
 import React from 'react';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
-import { blogData } from '../mock/data';
 
 const BlogSection = () => {
+  const posts = [
+    {
+      id: 1,
+      image: 'https://images.unsplash.com/photo-1566895733044-d2bdda8b6234?w=400&h=300&fit=crop',
+      date: '13 Gennaio 2026',
+      title: 'Collaborazione per Prevenire e Ridurre l\'Obesità Infantile: Un Impegno Collettivo',
+      excerpt: 'L\'obesità infantile è una problematica crescente che può causare complicazioni di salute a lungo termine. Per prevenirla e ridurla, è essenziale una collaborazione tra famiglie, scuole e professionisti della salute.'
+    },
+    {
+      id: 2,
+      image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=400&h=300&fit=crop',
+      date: '12 Gennaio 2026',
+      title: 'Obesità Infantile: Crescita e Influenza della Famiglia',
+      excerpt: 'L\'obesità infantile è un problema di salute globale in forte aumento. Secondo i dati ISTAT 2025, il sovrappeso tra i giovani è in crescita, con abitudini alimentari peggiorate.'
+    },
+    {
+      id: 3,
+      image: 'https://images.unsplash.com/photo-1550572017-4fcdbb59cc32?w=400&h=300&fit=crop',
+      date: '7 Novembre 2023',
+      title: 'Perchè non dobbiamo usare eccessivamente gli integratori?',
+      excerpt: 'Fin dai tempi dei nostri nonni, integratori e medicine di vario tipo erano da evitare. Ad oggi le statistiche indicano un aumento spropositato dell\'uso di questi prodotti.'
+    },
+    {
+      id: 4,
+      image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop',
+      date: '5 Novembre 2023',
+      title: 'BRODO DI OSSA, un vero super food',
+      excerpt: 'Il brodo di ossa è un piatto funzionale al benessere globale dell\'organismo. Introdotto in modo costante nella propria routine alimentare, può aiutare a lenire infiammazioni.'
+    }
+  ];
+
+  const categories = [
+    'Composizione corporea',
+    'Educazione e risorse',
+    'Ricerca e formazione',
+    'Ricette',
+    'Strumenti'
+  ];
+
   return (
     <section id="articoli" className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-16">
           <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
-            {blogData.sectionLabel}
+            BLOG
           </p>
           <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-8">
-            {blogData.mainTitle}
+            Ultimi articoli
           </h2>
           <Button
             variant="outline"
             className="border-2 border-teal-500 text-teal-700 hover:bg-teal-50 px-6 py-3 rounded-full font-medium inline-flex items-center space-x-2"
           >
-            <span>{blogData.ctaText}</span>
+            <span>Vedi tutti gli articoli</span>
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>
 
-        {/* Blog Posts Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {blogData.posts.map((post) => (
+          {posts.map((post) => (
             <article
               key={post.id}
               className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer group"
@@ -52,11 +88,10 @@ const BlogSection = () => {
           ))}
         </div>
 
-        {/* Categories */}
         <div className="mt-12">
           <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Categorie</h3>
           <div className="flex flex-wrap justify-center gap-3">
-            {blogData.categories.map((category, index) => (
+            {categories.map((category, index) => (
               <button
                 key={index}
                 className="px-5 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50 transition-all duration-200"
