@@ -1,0 +1,51 @@
+import React from 'react';
+import { Brain, BookOpen, Activity } from 'lucide-react';
+import { threeFocusData } from '../mock/data';
+
+const iconMap = {
+  brain: Brain,
+  bookOpen: BookOpen,
+  activity: Activity
+};
+
+const ThreeFocusSection = () => {
+  return (
+    <section id="metodo" className="py-24 bg-gradient-to-b from-white to-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
+            {threeFocusData.sectionTitle}
+          </p>
+          <h2 className="text-4xl md:text-5xl font-serif text-gray-900">
+            {threeFocusData.mainTitle}
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {threeFocusData.focuses.map((focus, index) => {
+            const IconComponent = iconMap[focus.icon];
+            return (
+              <div
+                key={index}
+                className="group bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="mb-6">
+                  <p className="text-xs font-bold tracking-widest text-teal-500 mb-4">
+                    {focus.number}
+                  </p>
+                  <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center group-hover:bg-teal-500 transition-colors duration-300">
+                    <IconComponent className="w-6 h-6 text-teal-600 group-hover:text-white transition-colors duration-300" />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-serif text-gray-900 mb-4">{focus.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{focus.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default ThreeFocusSection;
