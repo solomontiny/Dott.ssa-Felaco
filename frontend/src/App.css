@@ -47,3 +47,42 @@ body {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
+
+/* Phone input custom styles */
+.phone-input-container .react-tel-input .form-control {
+  width: 100% !important;
+  height: 42px !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #d1d5db !important;
+  padding-left: 48px !important;
+}
+
+.phone-input-container .react-tel-input .form-control:focus {
+  border-color: #14b8a6 !important;
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.1) !important;
+}
+
+.phone-input-container .react-tel-input .flag-dropdown {
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+  background-color: #f9fafb !important;
+}
+
+/* Calendar custom styles */
+.react-calendar {
+  border: none !important;
+  font-family: inherit !important;
+}
+
+.react-calendar__tile--active {
+  background: #14b8a6 !important;
+  color: white !important;
+}
+
+.react-calendar__tile--now {
+  background: #f0fdfa !important;
+}
+
+.react-calendar__tile:enabled:hover {
+  background-color: #ccfbf1 !important;
+}
