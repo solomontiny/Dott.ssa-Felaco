@@ -1,7 +1,10 @@
 import React from 'react';
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
+  
   const socialLinks = [
     { platform: 'facebook', icon: Facebook, url: '#' },
     { platform: 'instagram', icon: Instagram, url: '#' },
@@ -9,16 +12,16 @@ const Footer = () => {
   ];
 
   const navLinks = [
-    { label: 'Home', href: '#home' },
-    { label: 'Il mio metodo', href: '#metodo' },
-    { label: 'Chi sono', href: '#about' },
-    { label: 'Articoli', href: '#articoli' },
-    { label: 'Risorse', href: '#risorse' }
+    { label: t('nav.home'), href: '#home' },
+    { label: t('nav.about'), href: '#about' },
+    { label: t('nav.services'), href: '#servizi' },
+    { label: t('nav.consultation'), href: '#consultation' },
+    { label: t('nav.blog'), href: '#articoli' }
   ];
 
   const policies = [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Cookie Policy', href: '#' }
+    { label: t('footer.privacy'), href: '#' },
+    { label: t('footer.cookies'), href: '#' }
   ];
 
   return (
@@ -33,7 +36,7 @@ const Footer = () => {
               <span className="text-xl font-serif italic">Dott.ssa Felaco</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Biologa nutrizionista dedicata al benessere psico-fisico attraverso alimentazione consapevole, educazione e movimento.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => {
@@ -53,7 +56,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Link Utili</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('footer.links')}</h3>
             <ul className="space-y-3">
               {navLinks.map((link, index) => (
                 <li key={index}>
@@ -69,7 +72,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contatti</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-3">
               <li className="flex items-center space-x-3 text-gray-400">
                 <Mail className="w-5 h-5 text-teal-500" />
@@ -89,9 +92,7 @@ const Footer = () => {
 
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">
-              © 2026 Dott.ssa Felaco Giuseppina. Tutti i diritti riservati.
-            </p>
+            <p className="text-gray-400 text-sm">{t('footer.copyright')}</p>
             <div className="flex space-x-6">
               {policies.map((policy, index) => (
                 <a

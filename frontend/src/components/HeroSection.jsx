@@ -1,7 +1,10 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { useTranslation } from 'react-i18next';
 
 const HeroSection = () => {
+  const { t } = useTranslation();
+  
   const scrollToSection = (section) => {
     const element = document.querySelector(section);
     if (element) {
@@ -23,31 +26,29 @@ const HeroSection = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
         <div className="max-w-2xl">
           <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
-            BIOLOGA NUTRIZIONISTA
+            {t('hero.subtitle')}
           </p>
           <h1 className="text-6xl md:text-7xl font-serif mb-6">
-            <span className="text-teal-600 italic">Benvenuti</span>
+            <span className="text-teal-600 italic">{t('hero.title')}</span>
             <br />
-            <span className="text-gray-900">nel mio mondo</span>
+            <span className="text-gray-900">{t('hero.titleHighlight')}</span>
           </h1>
           <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-            <span className="font-semibold">Qui troverai tre focus principali,</span> volti a
-            incuriosire e stimolare Mente e Corpo, per una soluzione di ristrutturazione globale a
-            lungo termine
+            {t('hero.description')}
           </p>
           <div className="flex flex-wrap gap-4">
             <Button
               onClick={() => scrollToSection('#metodo')}
               className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-6 rounded-full text-base font-medium transition-all duration-300 hover:shadow-lg"
             >
-              Scopri il mio metodo
+              {t('hero.cta1')}
             </Button>
             <Button
               onClick={() => scrollToSection('#about')}
               variant="outline"
               className="border-2 border-teal-500 text-teal-700 hover:bg-teal-50 px-8 py-6 rounded-full text-base font-medium transition-all duration-300"
             >
-              Chi sono
+              {t('hero.cta2')}
             </Button>
           </div>
         </div>
