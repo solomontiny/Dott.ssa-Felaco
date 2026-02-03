@@ -37,6 +37,27 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+class ConsultationRequest(BaseModel):
+    name: str
+    email: EmailStr
+    phone: str
+    message: str
+    consent: bool
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+class AppointmentRequest(BaseModel):
+    name: str
+    email: EmailStr
+    phone: str
+    date: str
+    time: str
+    type: str
+    notes: Optional[str] = ""
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "pending"
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
