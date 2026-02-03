@@ -1,30 +1,43 @@
 import React from 'react';
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
-import { footerData } from '../mock/data';
-
-const socialIconMap = {
-  facebook: Facebook,
-  instagram: Instagram,
-  linkedin: Linkedin
-};
 
 const Footer = () => {
+  const socialLinks = [
+    { platform: 'facebook', icon: Facebook, url: '#' },
+    { platform: 'instagram', icon: Instagram, url: '#' },
+    { platform: 'linkedin', icon: Linkedin, url: '#' }
+  ];
+
+  const navLinks = [
+    { label: 'Home', href: '#home' },
+    { label: 'Il mio metodo', href: '#metodo' },
+    { label: 'Chi sono', href: '#about' },
+    { label: 'Articoli', href: '#articoli' },
+    { label: 'Risorse', href: '#risorse' }
+  ];
+
+  const policies = [
+    { label: 'Privacy Policy', href: '#' },
+    { label: 'Cookie Policy', href: '#' }
+  ];
+
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-3 gap-12 mb-12">
-          {/* Brand Section */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center">
                 <div className="w-6 h-6 border-2 border-white rounded-full" />
               </div>
-              <span className="text-xl font-serif italic">{footerData.logo}</span>
+              <span className="text-xl font-serif italic">Dott.ssa Felaco</span>
             </div>
-            <p className="text-gray-400 mb-6 leading-relaxed">{footerData.description}</p>
+            <p className="text-gray-400 mb-6 leading-relaxed">
+              Biologa nutrizionista dedicata al benessere psico-fisico attraverso alimentazione consapevole, educazione e movimento.
+            </p>
             <div className="flex space-x-4">
-              {footerData.socialLinks.map((social, index) => {
-                const IconComponent = socialIconMap[social.platform];
+              {socialLinks.map((social, index) => {
+                const IconComponent = social.icon;
                 return (
                   <a
                     key={index}
@@ -39,13 +52,10 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Links Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">
-              {footerData.linkSections[0].title}
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Link Utili</h3>
             <ul className="space-y-3">
-              {footerData.linkSections[0].links.map((link, index) => (
+              {navLinks.map((link, index) => (
                 <li key={index}>
                   <a
                     href={link.href}
@@ -58,32 +68,32 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Section */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Contatti</h3>
             <ul className="space-y-3">
               <li className="flex items-center space-x-3 text-gray-400">
                 <Mail className="w-5 h-5 text-teal-500" />
-                <span>{footerData.contact.email}</span>
+                <span>info@nutrizionistafelaco.it</span>
               </li>
               <li className="flex items-center space-x-3 text-gray-400">
                 <Phone className="w-5 h-5 text-teal-500" />
-                <span>{footerData.contact.phone}</span>
+                <span>+39 XXX XXX XXXX</span>
               </li>
               <li className="flex items-center space-x-3 text-gray-400">
                 <MapPin className="w-5 h-5 text-teal-500" />
-                <span>{footerData.contact.location}</span>
+                <span>Italia</span>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">{footerData.copyright}</p>
+            <p className="text-gray-400 text-sm">
+              © 2026 Dott.ssa Felaco Giuseppina. Tutti i diritti riservati.
+            </p>
             <div className="flex space-x-6">
-              {footerData.policies.map((policy, index) => (
+              {policies.map((policy, index) => (
                 <a
                   key={index}
                   href={policy.href}
