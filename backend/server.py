@@ -119,7 +119,7 @@ async def create_appointment(appointment: AppointmentRequest):
         doc = appointment.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         
-        result = await db.appointments.insert_one(doc)
+        await db.appointments.insert_one(doc)
         
         # Here you would send WhatsApp and email notifications
         logger.info(f"New appointment from {appointment.name} on {appointment.date} at {appointment.time}")
