@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Globe } from 'lucide-react';
 import { Button } from './ui/button';
-import { navigationLinks } from '../mock/data';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+
+  const navLinks = [
+    { label: 'HOME', href: '#home' },
+    { label: 'IL MIO METODO', href: '#metodo' },
+    { label: 'CONTATTI', href: '#contatti' },
+    { label: 'ARTICOLI', href: '#articoli' },
+    { label: 'RISORSE', href: '#risorse' }
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +39,6 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center">
               <div className="w-6 h-6 border-2 border-white rounded-full" />
@@ -42,9 +48,8 @@ const Navbar = () => {
             </span>
           </div>
 
-          {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigationLinks.map((link) => (
+            {navLinks.map((link) => (
               <button
                 key={link.label}
                 onClick={() => scrollToSection(link.href)}
@@ -55,7 +60,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Right Section */}
           <div className="flex items-center space-x-4">
             <button className="flex items-center space-x-1 text-sm text-gray-600 hover:text-teal-600 transition-colors">
               <Globe className="w-4 h-4" />
