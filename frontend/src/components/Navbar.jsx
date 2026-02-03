@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Globe } from 'lucide-react';
+import { Globe, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const navLinks = [
-    { label: 'HOME', href: '#home' },
-    { label: 'IL MIO METODO', href: '#metodo' },
-    { label: 'CONTATTI', href: '#contatti' },
-    { label: 'ARTICOLI', href: '#articoli' },
-    { label: 'RISORSE', href: '#risorse' }
+    { label: t('nav.home'), href: '#home' },
+    { label: t('nav.about'), href: '#about' },
+    { label: t('nav.services'), href: '#servizi' },
+    { label: t('nav.consultation'), href: '#consultation' },
+    { label: t('nav.blog'), href: '#articoli' }
   ];
+
+  const languages = [
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' }
+  ];
+
+  const currentLang = languages.find(lang => lang.code === i18n.language) || languages[0];
 
   useEffect(() => {
     const handleScroll = () => {
