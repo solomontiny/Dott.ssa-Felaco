@@ -43,6 +43,11 @@ const Navbar = () => {
     }
   };
 
+  const changeLanguage = (langCode) => {
+    i18n.changeLanguage(langCode);
+    setShowLangMenu(false);
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -73,12 +78,39 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-1 text-sm text-gray-600 hover:text-teal-600 transition-colors">
-              <Globe className="w-4 h-4" />
-              <span className="font-medium">IT</span>
-            </button>
-            <Button className="bg-teal-500 hover:bg-teal-600 text-white px-6 rounded-full">
-              Prenota
+            <div className="relative">
+              <button
+                onClick={() => setShowLangMenu(!showLangMenu)}
+                className="flex items-center space-x-2 text-sm text-gray-600 hover:text-teal-600 transition-colors px-3 py-2 rounded-lg hover:bg-gray-100"
+              >
+                <span className="text-lg">{currentLang.flag}</span>
+                <span className="font-medium">{currentLang.code.toUpperCase()}</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              
+              {showLangMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-200">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => changeLanguage(lang.code)}
+                      className={`w-full flex items-center space-x-3 px-4 py-2 hover:bg-gray-50 transition-colors ${
+                        i18n.language === lang.code ? 'bg-teal-50 text-teal-700' : 'text-gray-700'
+                      }`}
+                    >
+                      <span className="text-lg">{lang.flag}</span>
+                      <span className="font-medium">{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <Button
+              onClick={() => scrollToSection('#appointment')}
+              className="bg-teal-500 hover:bg-teal-600 text-white px-6 rounded-full"
+            >
+              {t('nav.appointment')}
             </Button>
           </div>
         </div>
