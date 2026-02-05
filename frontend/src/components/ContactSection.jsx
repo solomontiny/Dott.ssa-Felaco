@@ -83,7 +83,7 @@ const ContactSection = () => {
                 {t('contact.whatsappText')}
               </p>
               <button
-                onClick={() => window.open('https://wa.me/393334567890', '_blank')}
+                onClick={() => window.open('https://wa.me/393450503440', '_blank')}
                 className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-full font-medium flex items-center justify-center space-x-2 transition-colors duration-200"
               >
                 <Send className="w-5 h-5" />
