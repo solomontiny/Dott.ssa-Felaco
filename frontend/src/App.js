@@ -7,6 +7,7 @@ import ThreeFocusSection from "./components/ThreeFocusSection";
 import AboutSection from "./components/AboutSection";
 import PhilosophySection from "./components/PhilosophySection";
 import WhatWeDoSection from "./components/WhatWeDoSection";
+import QASection from "./components/QASection";
 import ConsultationForm from "./components/ConsultationForm";
 import TestimonialsSection from "./components/TestimonialsSection";
 import AppointmentBooking from "./components/AppointmentBooking";
@@ -24,6 +25,7 @@ function App() {
       <AboutSection />
       <PhilosophySection />
       <WhatWeDoSection />
+      <QASection />
       <ConsultationForm />
       <TestimonialsSection />
       <AppointmentBooking />
