@@ -2,6 +2,7 @@
   "nav": {
     "home": "INICIO",
     "about": "SOBRE MÍ",
+    "whatWeDo": "NUESTROS SERVICIOS",
     "services": "SERVICIOS",
     "consultation": "CONSULTA GRATUITA",
     "appointment": "RESERVAR",
@@ -10,9 +11,9 @@
   },
   "hero": {
     "subtitle": "BIÓLOGA NUTRICIONISTA",
-    "title": "Bienvenidos",
-    "titleHighlight": "a mi mundo",
-    "description": "Aquí encontrarás tres enfoques principales, destinados a estimular la Mente y el Cuerpo, para una solución de reestructuración integral a largo plazo",
+    "title": "COMIDA REAL. EQUILIBRIO REAL.",
+    "titleHighlight": "RESULTADOS REALES.",
+    "description": "Ayudo a las personas a crear hábitos alimenticios saludables y sostenibles que se adapten a su estilo de vida — sin estrés, culpa o dietas extremas.",
     "cta1": "Descubre mi método",
     "cta2": "Sobre mí"
   },
