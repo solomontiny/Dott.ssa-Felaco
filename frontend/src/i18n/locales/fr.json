@@ -127,6 +127,14 @@
     "description": "Biologiste nutritionniste dédiée au bien-être psycho-physique par une nutrition consciente, l'éducation et le mouvement.",
     "links": "Liens utiles",
     "contact": "Contact",
+    "email": {
+      "label": "Email",
+      "value": "dott.giuseppinafelaco@gmail.com"
+    },
+    "phone": {
+      "label": "Téléphone",
+      "value": "+39 345 050 3440"
+    },
     "copyright": "© 2026 Dr. Felaco Giuseppina. Tous droits réservés.",
     "privacy": "Politique de confidentialité",
     "cookies": "Politique des cookies"
