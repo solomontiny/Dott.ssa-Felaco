@@ -175,6 +175,16 @@ async def get_consultations():
 # Include the router in the main app
 app.include_router(api_router)
 
+# Health check endpoint for Kubernetes (without /api prefix)
+@app.get("/health")
+async def health_check_root():
+    """Health check endpoint for Kubernetes liveness and readiness probes"""
+    return {
+        "status": "healthy",
+        "service": "dottssa-felaco-api",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
