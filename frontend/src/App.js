@@ -6,11 +6,11 @@ import HeroSection from "./components/HeroSection";
 import ThreeFocusSection from "./components/ThreeFocusSection";
 import AboutSection from "./components/AboutSection";
 import PhilosophySection from "./components/PhilosophySection";
-import ServicesSection from "./components/ServicesSection";
+import WhatWeDoSection from "./components/WhatWeDoSection";
 import ConsultationForm from "./components/ConsultationForm";
 import TestimonialsSection from "./components/TestimonialsSection";
 import AppointmentBooking from "./components/AppointmentBooking";
-import BlogSection from "./components/BlogSection";
+import ContactSection from "./components/ContactSection";
 import FinalCtaSection from "./components/FinalCtaSection";
 import Footer from "./components/Footer";
 import WhatsAppWidget from "./components/WhatsAppWidget";
@@ -23,11 +23,11 @@ function App() {
       <ThreeFocusSection />
       <AboutSection />
       <PhilosophySection />
-      <ServicesSection />
+      <WhatWeDoSection />
       <ConsultationForm />
       <TestimonialsSection />
       <AppointmentBooking />
-      <BlogSection />
+      <ContactSection />
       <FinalCtaSection />
       <Footer />
       <WhatsAppWidget />
