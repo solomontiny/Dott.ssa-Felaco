@@ -21,20 +21,19 @@ const HeroSection = () => {
           className="w-full h-full object-cover object-center"
           style={{ imageRendering: 'crisp-edges' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-        <div className="max-w-2xl">
-          <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 w-full">
+        <div className="max-w-3xl">
+          <p className="text-teal-600 font-semibold tracking-wider text-sm mb-6 uppercase">
             {t('hero.subtitle')}
           </p>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            <span className="text-gray-900">{t('hero.title')}</span>
-            <br />
-            <span className="text-teal-600">{t('hero.titleHighlight')}</span>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            <span className="block text-gray-900">{t('hero.title')}</span>
+            <span className="block text-teal-600">{t('hero.titleHighlight')}</span>
           </h1>
-          <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+          <p className="text-xl text-gray-700 mb-10 leading-relaxed max-w-2xl">
             {t('hero.description')}
           </p>
           <div className="flex flex-wrap gap-4">
