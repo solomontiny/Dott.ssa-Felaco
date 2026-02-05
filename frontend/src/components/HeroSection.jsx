@@ -16,9 +16,10 @@ const HeroSection = () => {
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1757332334664-83bff99e7a43?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwzfHxudXRyaXRpb24lMjB2ZWdldGFibGVzfGVufDB8fHx8MTc3MDExNjk4N3ww&ixlib=rb-4.1.0&q=85"
+          src="https://customer-assets.emergentagent.com/job_80398c3c-4f8a-434b-b923-133758dd4592/artifacts/fhkv7are_43f0764f-4653-4733-9f19-e168d39d573d.jpeg"
           alt="Nutrition and wellness"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
+          style={{ imageRendering: 'crisp-edges' }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent" />
       </div>
@@ -28,10 +29,10 @@ const HeroSection = () => {
           <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
             {t('hero.subtitle')}
           </p>
-          <h1 className="text-6xl md:text-7xl font-serif mb-6">
-            <span className="text-teal-600 italic">{t('hero.title')}</span>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            <span className="text-gray-900">{t('hero.title')}</span>
             <br />
-            <span className="text-gray-900">{t('hero.titleHighlight')}</span>
+            <span className="text-teal-600">{t('hero.titleHighlight')}</span>
           </h1>
           <p className="text-lg text-gray-700 mb-8 leading-relaxed">
             {t('hero.description')}
