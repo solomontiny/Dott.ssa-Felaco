@@ -168,8 +168,8 @@ export const footerData = {
     }
   ],
   contact: {
-    email: 'info@nutrizionistafelaco.it',
-    phone: '+39 XXX XXX XXXX',
+    email: 'dott.giuseppinafelaco@gmail.com',
+    phone: '+39 345 050 3440',
     location: 'Italia'
   },
   copyright: '© 2026 Dott.ssa Felaco Giuseppina. Tutti i diritti riservati.',
