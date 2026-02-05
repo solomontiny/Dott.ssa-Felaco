@@ -2,6 +2,7 @@
   "nav": {
     "home": "ACCUEIL",
     "about": "À PROPOS",
+    "whatWeDo": "NOS SERVICES",
     "services": "SERVICES",
     "consultation": "CONSULTATION GRATUITE",
     "appointment": "RÉSERVER",
@@ -10,9 +11,9 @@
   },
   "hero": {
     "subtitle": "BIOLOGISTE NUTRITIONNISTE",
-    "title": "Bienvenue",
-    "titleHighlight": "dans mon monde",
-    "description": "Ici vous trouverez trois axes principaux, visant à stimuler l'Esprit et le Corps, pour une solution de restructuration globale à long terme",
+    "title": "VRAIE NOURRITURE. VRAI ÉQUILIBRE.",
+    "titleHighlight": "VRAIS RÉSULTATS.",
+    "description": "J'aide les gens à créer des habitudes alimentaires saines et durables qui s'adaptent à leur style de vie — sans stress, culpabilité ou régimes extrêmes.",
     "cta1": "Découvrez ma méthode",
     "cta2": "À propos"
   },
