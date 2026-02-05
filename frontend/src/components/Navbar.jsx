@@ -12,6 +12,7 @@ const Navbar = () => {
     { label: t('nav.home'), href: '#home' },
     { label: t('nav.about'), href: '#about' },
     { label: t('nav.whatWeDo'), href: '#what-we-do' },
+    { label: t('nav.qa'), href: '#qa' },
     { label: t('nav.consultation'), href: '#consultation' },
     { label: t('nav.contact'), href: '#contact' }
   ];
