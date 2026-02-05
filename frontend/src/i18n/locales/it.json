@@ -75,9 +75,33 @@
     "categories": "Categorie"
   },
   "consultation": {
-    "title": "Consulenza Online Gratuita",
-    "subtitle": "Ricevi una consulenza personalizzata",
-    "description": "Compila il modulo e ti contatteremo entro 24 ore per una consulenza gratuita.",
+    "title": "Consulenza Nutrizionale Gratuita Online",
+    "subtitle": "Inizia il tuo percorso verso il benessere con una valutazione professionale gratuita",
+    "intro": "Prenota la tua consulenza nutrizionale gratuita e scopri come la nutrizione clinica personalizzata pu\u00f2 migliorare la tua salute. Durante la consulenza, riceverai una valutazione nutrizionale completa, inclusa l'analisi del BMI e consigli pratici su misura per te.",
+    "includesTitle": "La Consulenza Gratuita Include:",
+    "includes": {
+      "assessment": {
+        "title": "Valutazione dello Stato Nutrizionale",
+        "description": "Analisi completa del tuo stato di salute e delle esigenze nutrizionali individuali."
+      },
+      "habits": {
+        "title": "Analisi delle Abitudini Alimentari",
+        "description": "Revisione dettagliata delle tue abitudini alimentari attuali e identificazione di aree di miglioramento."
+      },
+      "measurements": {
+        "title": "Valutazione delle Misure Corporee",
+        "description": "Misurazione professionale della composizione corporea per monitorare i progressi."
+      },
+      "bmi": {
+        "title": "Calcolo BMI e Peso Ideale",
+        "description": "Determinazione del tuo indice di massa corporea e del peso ottimale per la tua salute."
+      },
+      "advice": {
+        "title": "Consigli Personalizzati e Sostenibili",
+        "description": "Raccomandazioni pratiche e realistiche adattate al tuo stile di vita e obiettivi."
+      }
+    },
+    "cta": "Prenota ora la tua consulenza gratuita e inizia il tuo percorso verso una salute migliore con la terapia nutrizionale medica personalizzata.",
     "form": {
       "name": "Nome completo",
       "email": "Email",
