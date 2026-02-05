@@ -63,6 +63,15 @@ class AppointmentRequest(BaseModel):
 async def root():
     return {"message": "Hello World"}
 
+@api_router.get("/health")
+async def health_check():
+    """Health check endpoint for Kubernetes liveness and readiness probes"""
+    return {
+        "status": "healthy",
+        "service": "dottssa-felaco-api",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
     status_dict = input.model_dump()
