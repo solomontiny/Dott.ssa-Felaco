@@ -6,8 +6,8 @@ const WhatsAppWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t, i18n } = useTranslation();
   
-  // Default WhatsApp number - can be configured
-  const whatsappNumber = '+393334567890';
+  // Admin WhatsApp number
+  const whatsappNumber = '+393450503440';
   
   const getWhatsAppMessage = () => {
     const messages = {
