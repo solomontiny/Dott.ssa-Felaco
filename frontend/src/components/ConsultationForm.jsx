@@ -103,7 +103,102 @@ const ConsultationForm = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12">\n          <form onSubmit={handleSubmit} className="space-y-6">\n            <div className="grid md:grid-cols-2 gap-6">\n              <div>\n                <label className="block text-sm font-medium text-gray-700 mb-2">\n                  {t('consultation.form.name')} *\n                </label>\n                <Input\n                  type="text"\n                  name="name"\n                  value={formData.name}\n                  onChange={handleChange}\n                  required\n                  className="w-full"\n                  placeholder="Mario Rossi"\n                />\n              </div>\n\n              <div>\n                <label className="block text-sm font-medium text-gray-700 mb-2">\n                  {t('consultation.form.email')} *\n                </label>\n                <Input\n                  type="email"\n                  name="email"\n                  value={formData.email}\n                  onChange={handleChange}\n                  required\n                  className="w-full"\n                  placeholder="mario@example.com"\n                />\n              </div>\n            </div>\n\n            <div>\n              <label className="block text-sm font-medium text-gray-700 mb-2">\n                {t('consultation.form.phone')} *\n              </label>\n              <PhoneInput\n                country={'it'}\n                value={formData.phone}\n                onChange={handlePhoneChange}\n                inputClass="w-full"\n                containerClass="phone-input-container"\n                preferredCountries={['it', 'fr', 'es', 'gb']}\n              />\n            </div>\n\n            <div>\n              <label className="block text-sm font-medium text-gray-700 mb-2">\n                {t('consultation.form.message')} *\n              </label>\n              <Textarea\n                name="message"\n                value={formData.message}\n                onChange={handleChange}\n                required\n                rows={5}\n                className="w-full"\n                placeholder={t('consultation.form.message')}\n              />\n            </div>\n\n            <div className="flex items-start space-x-2">\n              <input\n                type="checkbox"\n                name="consent"\n                checked={formData.consent}\n                onChange={handleChange}\n                className="mt-1"\n                required\n              />\n              <label className="text-sm text-gray-600">\n                {t('consultation.form.consent')} *\n              </label>\n            </div>\n\n            {status.message && (\n              <div className={`flex items-center space-x-2 p-4 rounded-lg ${\n                status.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'\n              }`}>\n                {status.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}\n                <span>{status.message}</span>\n              </div>\n            )}\n\n            <Button\n              type="submit"\n              disabled={isSubmitting}\n              className="w-full bg-teal-500 hover:bg-teal-600 text-white py-6 rounded-full text-lg font-medium flex items-center justify-center space-x-2"\n            >\n              <Send className="w-5 h-5" />\n              <span>{isSubmitting ? 'Invio in corso...' : t('consultation.form.submit')}</span>\n            </Button>\n          </form>\n        </div>
+        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('consultation.form.name')} *
+                </label>
+                <Input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full"
+                  placeholder="Mario Rossi"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('consultation.form.email')} *
+                </label>
+                <Input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full"
+                  placeholder="mario@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('consultation.form.phone')} *
+              </label>
+              <PhoneInput
+                country={'it'}
+                value={formData.phone}
+                onChange={handlePhoneChange}
+                inputClass="w-full"
+                containerClass="phone-input-container"
+                preferredCountries={['it', 'fr', 'es', 'gb']}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('consultation.form.message')} *
+              </label>
+              <Textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows={5}
+                className="w-full"
+                placeholder={t('consultation.form.message')}
+              />
+            </div>
+
+            <div className="flex items-start space-x-2">
+              <input
+                type="checkbox"
+                name="consent"
+                checked={formData.consent}
+                onChange={handleChange}
+                className="mt-1"
+                required
+              />
+              <label className="text-sm text-gray-600">
+                {t('consultation.form.consent')} *
+              </label>
+            </div>
+
+            {status.message && (
+              <div className={`flex items-center space-x-2 p-4 rounded-lg ${
+                status.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+              }`}>
+                {status.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                <span>{status.message}</span>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-teal-500 hover:bg-teal-600 text-white py-6 rounded-full text-lg font-medium flex items-center justify-center space-x-2"
+            >
+              <Send className="w-5 h-5" />
+              <span>{isSubmitting ? 'Invio in corso...' : t('consultation.form.submit')}</span>
+            </Button>
+          </form>
+        </div>
       </div>
     </section>
   );
