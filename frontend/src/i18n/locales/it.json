@@ -135,6 +135,104 @@
       "error": "Errore nella prenotazione. Riprova."
     }
   },
+  "whatWeDo": {
+    "label": "I NOSTRI SERVIZI",
+    "title": "Cosa Facciamo",
+    "subtitle": "Offriamo terapia nutrizionale medica specializzata per una vasta gamma di condizioni di salute, con un approccio personalizzato e basato sull'evidenza scientifica.",
+    "cta": "Ogni percorso nutrizionale \u00e8 personalizzato in base alle tue esigenze specifiche e condizioni di salute.",
+    "button": "Prenota Consulenza Gratuita"
+  },
+  "services": {
+    "overweight": {
+      "title": "Sovrappeso e Obesit\u00e0",
+      "description": "Programmi personalizzati per la gestione del peso con approccio sostenibile e supporto continuo."
+    },
+    "eatingDisorders": {
+      "title": "Disturbi del Comportamento Alimentare",
+      "description": "Supporto nutrizionale specializzato per anoressia, bulimia e altri disturbi alimentari."
+    },
+    "diabetes": {
+      "title": "Diabete",
+      "description": "Terapia nutrizionale medica per la gestione del diabete di tipo 1 e tipo 2."
+    },
+    "metabolic": {
+      "title": "Sindrome Metabolica",
+      "description": "Piani alimentari mirati per migliorare i parametri metabolici e prevenire complicanze."
+    },
+    "hypertension": {
+      "title": "Ipertensione e Patologie Cardiovascolari",
+      "description": "Diete terapeutiche per il controllo della pressione e la salute del cuore."
+    },
+    "renal": {
+      "title": "Insufficienza Renale",
+      "description": "Nutrizione clinica specializzata per supportare la funzione renale."
+    },
+    "childhoodObesity": {
+      "title": "Obesit\u00e0 Infantile",
+      "description": "Programmi nutrizionali dedicati per bambini e adolescenti con approccio familiare."
+    },
+    "autoimmune": {
+      "title": "Fibromialgia e Malattie Autoimmuni",
+      "description": "Strategie nutrizionali antinfiammatorie per gestire sintomi e migliorare la qualit\u00e0 di vita."
+    },
+    "intolerances": {
+      "title": "Intolleranze e Allergie Alimentari",
+      "description": "Identificazione e gestione di intolleranze alimentari con piani dietetici bilanciati."
+    },
+    "pregnancy": {
+      "title": "Gravidanza e Allattamento",
+      "description": "Supporto nutrizionale completo per mamme in attesa e durante l'allattamento."
+    },
+    "menopause": {
+      "title": "Menopausa",
+      "description": "Nutrizione mirata per gestire i sintomi della menopausa e promuovere il benessere ormonale."
+    },
+    "oncological": {
+      "title": "Nutrizione Oncologica",
+      "description": "Supporto nutrizionale specializzato durante e dopo il trattamento oncologico."
+    },
+    "sports": {
+      "title": "Nutrizione Sportiva",
+      "description": "Piani alimentari ottimizzati per atleti e appassionati di fitness."
+    },
+    "vegetarian": {
+      "title": "Alimentazione Vegetariana e Vegana",
+      "description": "Piani nutrizionali completi ed equilibrati per diete a base vegetale."
+    }
+  },
+  "contact": {
+    "label": "CONTATTI",
+    "title": "Mettiti in Contatto",
+    "subtitle": "Siamo qui per rispondere alle tue domande",
+    "infoTitle": "Informazioni di Contatto",
+    "directContact": "Contatto Diretto",
+    "whatsappText": "Contattaci su WhatsApp per una risposta rapida",
+    "whatsappButton": "Invia Messaggio WhatsApp",
+    "formTitle": "Invia un Messaggio",
+    "email": {
+      "label": "Email",
+      "value": "info@nutrizionistafelaco.it"
+    },
+    "phone": {
+      "label": "Telefono",
+      "value": "+39 333 456 7890"
+    },
+    "location": {
+      "label": "Indirizzo",
+      "value": "Studio Nutrizionale, Via Roma 123, Milano, Italia"
+    },
+    "hours": {
+      "label": "Orari",
+      "value": "Lun-Ven: 9:00 - 18:00 | Su appuntamento"
+    },
+    "form": {
+      "name": "Nome completo",
+      "email": "Indirizzo email",
+      "phone": "Numero di telefono",
+      "message": "Il tuo messaggio",
+      "submit": "Invia Messaggio"
+    }
+  },
   "testimonials": {
     "title": "Cosa dicono i miei clienti",
     "subtitle": "Esperienze reali di trasformazione"
