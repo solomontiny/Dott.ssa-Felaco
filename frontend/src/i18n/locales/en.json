@@ -2,6 +2,7 @@
   "nav": {
     "home": "HOME",
     "about": "ABOUT",
+    "whatWeDo": "OUR SERVICES",
     "services": "SERVICES",
     "consultation": "FREE CONSULTATION",
     "appointment": "BOOK NOW",
@@ -10,9 +11,9 @@
   },
   "hero": {
     "subtitle": "NUTRITIONIST BIOLOGIST",
-    "title": "Welcome",
-    "titleHighlight": "to my world",
-    "description": "Here you will find three main focuses, aimed at stimulating Mind and Body, for a comprehensive long-term restructuring solution",
+    "title": "REAL FOOD. REAL BALANCE.",
+    "titleHighlight": "REAL RESULTS.",
+    "description": "I help people create healthy, sustainable eating habits that fit their lifestyle — without stress, guilt, or extreme diets.",
     "cta1": "Discover my method",
     "cta2": "About me"
   },
