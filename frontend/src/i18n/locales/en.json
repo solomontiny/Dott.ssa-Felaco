@@ -122,6 +122,104 @@
     "primary": "Contact me now",
     "secondary": "Learn more"
   },
+  "whatWeDo": {
+    "label": "OUR SERVICES",
+    "title": "What We Do",
+    "subtitle": "We offer specialized medical nutrition therapy for a wide range of health conditions, with a personalized, evidence-based approach.",
+    "cta": "Each nutrition plan is tailored to your specific needs and health conditions.",
+    "button": "Book Free Consultation"
+  },
+  "services": {
+    "overweight": {
+      "title": "Overweight and Obesity",
+      "description": "Personalized weight management programs with sustainable approach and continuous support."
+    },
+    "eatingDisorders": {
+      "title": "Eating Disorders",
+      "description": "Specialized nutritional support for anorexia, bulimia, and other eating disorders."
+    },
+    "diabetes": {
+      "title": "Diabetes",
+      "description": "Medical nutrition therapy for type 1 and type 2 diabetes management."
+    },
+    "metabolic": {
+      "title": "Metabolic Syndrome",
+      "description": "Targeted meal plans to improve metabolic parameters and prevent complications."
+    },
+    "hypertension": {
+      "title": "Hypertension and Heart Diseases",
+      "description": "Therapeutic diets for blood pressure control and heart health."
+    },
+    "renal": {
+      "title": "Renal Insufficiency",
+      "description": "Specialized clinical nutrition to support kidney function."
+    },
+    "childhoodObesity": {
+      "title": "Childhood Obesity",
+      "description": "Dedicated nutrition programs for children and adolescents with family-based approach."
+    },
+    "autoimmune": {
+      "title": "Fibromyalgia and Autoimmune Diseases",
+      "description": "Anti-inflammatory nutritional strategies to manage symptoms and improve quality of life."
+    },
+    "intolerances": {
+      "title": "Food Intolerances and Allergies",
+      "description": "Identification and management of food intolerances with balanced dietary plans."
+    },
+    "pregnancy": {
+      "title": "Pregnancy and Breastfeeding",
+      "description": "Complete nutritional support for expectant mothers and during breastfeeding."
+    },
+    "menopause": {
+      "title": "Menopause",
+      "description": "Targeted nutrition to manage menopause symptoms and promote hormonal well-being."
+    },
+    "oncological": {
+      "title": "Oncological Nutrition",
+      "description": "Specialized nutritional support during and after cancer treatment."
+    },
+    "sports": {
+      "title": "Sports Nutrition",
+      "description": "Optimized meal plans for athletes and fitness enthusiasts."
+    },
+    "vegetarian": {
+      "title": "Vegetarian and Vegan Nutrition",
+      "description": "Complete and balanced nutrition plans for plant-based diets."
+    }
+  },
+  "contact": {
+    "label": "CONTACT",
+    "title": "Get in Touch",
+    "subtitle": "We're here to answer your questions",
+    "infoTitle": "Contact Information",
+    "directContact": "Direct Contact",
+    "whatsappText": "Contact us on WhatsApp for a quick response",
+    "whatsappButton": "Send WhatsApp Message",
+    "formTitle": "Send a Message",
+    "email": {
+      "label": "Email",
+      "value": "info@nutrizionistafelaco.it"
+    },
+    "phone": {
+      "label": "Phone",
+      "value": "+39 333 456 7890"
+    },
+    "location": {
+      "label": "Address",
+      "value": "Nutrition Studio, Via Roma 123, Milano, Italy"
+    },
+    "hours": {
+      "label": "Hours",
+      "value": "Mon-Fri: 9:00 AM - 6:00 PM | By appointment"
+    },
+    "form": {
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "message": "Your message",
+      "submit": "Send Message"
+    }
+  },
   "footer": {
     "description": "Nutritionist biologist dedicated to psycho-physical well-being through conscious nutrition, education and movement.",
     "links": "Useful Links",
