@@ -12,14 +12,14 @@ const ContactSection = () => {
     {
       icon: Mail,
       label: t('contact.email.label'),
-      value: 'info@nutrizionistafelaco.it',
-      href: 'mailto:info@nutrizionistafelaco.it'
+      value: 'dott.giuseppinafelaco@gmail.com',
+      href: 'mailto:dott.giuseppinafelaco@gmail.com'
     },
     {
       icon: Phone,
       label: t('contact.phone.label'),
-      value: '+39 333 456 7890',
-      href: 'tel:+393334567890'
+      value: '+39 345 050 3440',
+      href: 'tel:+393450503440'
     },
     {
       icon: MapPin,
