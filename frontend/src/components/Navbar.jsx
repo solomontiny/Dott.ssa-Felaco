@@ -11,9 +11,9 @@ const Navbar = () => {
   const navLinks = [
     { label: t('nav.home'), href: '#home' },
     { label: t('nav.about'), href: '#about' },
-    { label: t('nav.services'), href: '#servizi' },
+    { label: t('nav.whatWeDo'), href: '#what-we-do' },
     { label: t('nav.consultation'), href: '#consultation' },
-    { label: t('nav.blog'), href: '#articoli' }
+    { label: t('nav.contact'), href: '#contact' }
   ];
 
   const languages = [
