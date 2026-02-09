@@ -103,8 +103,8 @@ body {
 }
 
 .phone-input-container .react-tel-input .form-control:focus {
-  border-color: #14b8a6 !important;
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1) !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
 }
 
 .phone-input-container .react-tel-input .flag-dropdown {
