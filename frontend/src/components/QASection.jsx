@@ -22,7 +22,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -44,7 +44,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -66,7 +66,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -88,7 +88,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -110,7 +110,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -132,7 +132,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -154,7 +154,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -176,7 +176,7 @@ const QASection = () => {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <HelpCircle className="w-6 h-6 text-teal-600" />
                 </div>
               </div>
@@ -213,7 +213,7 @@ const QASection = () => {
           </div>
         </div>
 
-        <div className="mt-12 text-center p-8 bg-blue-50 rounded-2xl border border-teal-100">
+        <div className="mt-12 text-center p-8 bg-blue-50 rounded-2xl border border-blue-100">
           <h3 className="text-2xl font-serif text-gray-900 mb-3">
             Ready to Start Your Journey?
           </h3>

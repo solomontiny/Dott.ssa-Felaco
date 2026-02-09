@@ -50,7 +50,7 @@ const ThreeFocusSection = () => {
                   <p className="text-xs font-bold tracking-widest text-blue-500 mb-4">
                     {focus.number}
                   </p>
-                  <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center group-hover:bg-blue-500 transition-colors duration-300">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-500 transition-colors duration-300">
                     <IconComponent className="w-6 h-6 text-teal-600 group-hover:text-white transition-colors duration-300" />
                   </div>
                 </div>

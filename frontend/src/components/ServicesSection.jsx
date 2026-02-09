@@ -54,7 +54,7 @@ const ServicesSection = () => {
                     key={index}
                     className="flex items-start space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors duration-200"
                   >
-                    <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <IconComponent className="w-6 h-6 text-teal-600" />
                     </div>
                     <div>
@@ -84,7 +84,7 @@ const ServicesSection = () => {
                 </Button>
               </div>
             </div>
-            <div className="absolute -top-6 -left-6 w-40 h-40 bg-teal-100 rounded-3xl -z-10" />
+            <div className="absolute -top-6 -left-6 w-40 h-40 bg-blue-100 rounded-3xl -z-10" />
           </div>
         </div>
       </div>

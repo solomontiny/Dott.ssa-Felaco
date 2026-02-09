@@ -63,7 +63,7 @@ const ContactSection = () => {
                     href={item.href}
                     className="flex items-start space-x-4 p-4 rounded-xl hover:bg-white transition-colors duration-200 group"
                   >
-                    <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500 transition-colors duration-300">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500 transition-colors duration-300">
                       <IconComponent className="w-6 h-6 text-teal-600 group-hover:text-white transition-colors duration-300" />
                     </div>
                     <div>
@@ -75,7 +75,7 @@ const ContactSection = () => {
               })}
             </div>
 
-            <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-teal-100">
+            <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-100">
               <h4 className="font-semibold text-gray-900 mb-2">
                 {t('contact.directContact')}
               </h4>
