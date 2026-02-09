@@ -78,7 +78,7 @@ const ServicesSection = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-8 left-8 right-8">
-                <Button className="bg-teal-500 hover:bg-teal-600 text-white w-full py-6 rounded-full text-base font-medium flex items-center justify-center space-x-2 group">
+                <Button className="bg-blue-500 hover:bg-teal-600 text-white w-full py-6 rounded-full text-base font-medium flex items-center justify-center space-x-2 group">
                   <span>Vai agli articoli</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>

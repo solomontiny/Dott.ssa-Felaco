@@ -30,7 +30,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-12 mb-12">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
                 <div className="w-6 h-6 border-2 border-white rounded-full" />
               </div>
               <span className="text-xl font-serif italic">Dott.ssa Felaco</span>
@@ -45,7 +45,7 @@ const Footer = () => {
                   <a
                     key={index}
                     href={social.url}
-                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-teal-500 transition-colors duration-200"
+                    className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200"
                     aria-label={social.platform}
                   >
                     <IconComponent className="w-5 h-5" />
@@ -75,15 +75,15 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-3">
               <li className="flex items-center space-x-3 text-gray-400">
-                <Mail className="w-5 h-5 text-teal-500" />
+                <Mail className="w-5 h-5 text-blue-500" />
                 <span>dott.giuseppinafelaco@gmail.com</span>
               </li>
               <li className="flex items-center space-x-3 text-gray-400">
-                <Phone className="w-5 h-5 text-teal-500" />
+                <Phone className="w-5 h-5 text-blue-500" />
                 <span>+39 345 050 3440</span>
               </li>
               <li className="flex items-center space-x-3 text-gray-400">
-                <MapPin className="w-5 h-5 text-teal-500" />
+                <MapPin className="w-5 h-5 text-blue-500" />
                 <span>Italia</span>
               </li>
             </ul>

@@ -39,14 +39,14 @@ const HeroSection = () => {
           <div className="flex flex-wrap gap-4">
             <Button
               onClick={() => scrollToSection('#metodo')}
-              className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-6 rounded-full text-base font-medium transition-all duration-300 hover:shadow-lg"
+              className="bg-blue-500 hover:bg-teal-600 text-white px-8 py-6 rounded-full text-base font-medium transition-all duration-300 hover:shadow-lg"
             >
               {t('hero.cta1')}
             </Button>
             <Button
               onClick={() => scrollToSection('#about')}
               variant="outline"
-              className="border-2 border-teal-500 text-teal-700 hover:bg-teal-50 px-8 py-6 rounded-full text-base font-medium transition-all duration-300"
+              className="border-2 border-blue-500 text-teal-700 hover:bg-blue-50 px-8 py-6 rounded-full text-base font-medium transition-all duration-300"
             >
               {t('hero.cta2')}
             </Button>
@@ -55,8 +55,8 @@ const HeroSection = () => {
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-        <div className="w-6 h-10 border-2 border-teal-500 rounded-full flex items-start justify-center p-2">
-          <div className="w-1 h-2 bg-teal-500 rounded-full animate-bounce" />
+        <div className="w-6 h-10 border-2 border-blue-500 rounded-full flex items-start justify-center p-2">
+          <div className="w-1 h-2 bg-blue-500 rounded-full animate-bounce" />
         </div>
       </div>
     </section>

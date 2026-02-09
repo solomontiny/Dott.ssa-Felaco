@@ -54,7 +54,7 @@ const BlogSection = () => {
           </h2>
           <Button
             variant="outline"
-            className="border-2 border-teal-500 text-teal-700 hover:bg-teal-50 px-6 py-3 rounded-full font-medium inline-flex items-center space-x-2"
+            className="border-2 border-blue-500 text-teal-700 hover:bg-blue-50 px-6 py-3 rounded-full font-medium inline-flex items-center space-x-2"
           >
             <span>Vedi tutti gli articoli</span>
             <ArrowRight className="w-4 h-4" />
@@ -94,7 +94,7 @@ const BlogSection = () => {
             {categories.map((category, index) => (
               <button
                 key={index}
-                className="px-5 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50 transition-all duration-200"
+                className="px-5 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-blue-500 hover:text-teal-600 hover:bg-blue-50 transition-all duration-200"
               >
                 {category}
               </button>

@@ -66,7 +66,7 @@ const ConsultationForm = () => {
   };
 
   return (
-    <section id="consultation" className="py-24 bg-gradient-to-br from-teal-50 to-white">
+    <section id="consultation" className="py-24 bg-gradient-to-br from-blue-50 to-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-4">
@@ -86,7 +86,7 @@ const ConsultationForm = () => {
           <div className="grid md:grid-cols-2 gap-6">
             {['assessment', 'habits', 'measurements', 'bmi', 'advice'].map((key) => (
               <div key={key} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl">
-                <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 flex-shrink-0" />
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">
                     {t(`consultation.includes.${key}.title`)}
@@ -192,7 +192,7 @@ const ConsultationForm = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-teal-500 hover:bg-teal-600 text-white py-6 rounded-full text-lg font-medium flex items-center justify-center space-x-2"
+              className="w-full bg-blue-500 hover:bg-teal-600 text-white py-6 rounded-full text-lg font-medium flex items-center justify-center space-x-2"
             >
               <Send className="w-5 h-5" />
               <span>{isSubmitting ? 'Invio in corso...' : t('consultation.form.submit')}</span>

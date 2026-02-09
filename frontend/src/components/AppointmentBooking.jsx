@@ -156,7 +156,7 @@ const AppointmentBooking = () => {
                   <button
                     type="button"
                     onClick={() => setShowCalendar(!showCalendar)}
-                    className="w-full flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:border-teal-500 transition-colors"
+                    className="w-full flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors"
                   >
                     <CalendarIcon className="w-5 h-5 text-gray-500" />
                     <span>{formData.date.toLocaleDateString()}</span>
@@ -184,7 +184,7 @@ const AppointmentBooking = () => {
                   value={formData.time}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">{t('appointment.form.time')}</option>
                   {timeSlots.map(slot => (
@@ -203,7 +203,7 @@ const AppointmentBooking = () => {
                 value={formData.type}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">{t('appointment.form.type')}</option>
                 <option value="initial">{t('appointment.form.types.initial')}</option>
@@ -238,7 +238,7 @@ const AppointmentBooking = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-teal-500 hover:bg-teal-600 text-white py-6 rounded-full text-lg font-medium"
+              className="w-full bg-blue-500 hover:bg-teal-600 text-white py-6 rounded-full text-lg font-medium"
             >
               {isSubmitting ? 'Prenotazione in corso...' : t('appointment.form.submit')}
             </Button>

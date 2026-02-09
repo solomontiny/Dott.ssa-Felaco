@@ -47,10 +47,10 @@ const ThreeFocusSection = () => {
                 className="group bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
               >
                 <div className="mb-6">
-                  <p className="text-xs font-bold tracking-widest text-teal-500 mb-4">
+                  <p className="text-xs font-bold tracking-widest text-blue-500 mb-4">
                     {focus.number}
                   </p>
-                  <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center group-hover:bg-teal-500 transition-colors duration-300">
+                  <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center group-hover:bg-blue-500 transition-colors duration-300">
                     <IconComponent className="w-6 h-6 text-teal-600 group-hover:text-white transition-colors duration-300" />
                   </div>
                 </div>

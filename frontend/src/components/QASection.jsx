@@ -191,19 +191,19 @@ const QASection = () => {
                   </p>
                   <ul className="space-y-2">
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">Feel tired of strict diets</span>
                     </li>
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">Want to eat better without stress</span>
                     </li>
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">Live busy lives</span>
                     </li>
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">Want long-term health, not quick fixes</span>
                     </li>
                   </ul>
@@ -213,7 +213,7 @@ const QASection = () => {
           </div>
         </div>
 
-        <div className="mt-12 text-center p-8 bg-teal-50 rounded-2xl border border-teal-100">
+        <div className="mt-12 text-center p-8 bg-blue-50 rounded-2xl border border-teal-100">
           <h3 className="text-2xl font-serif text-gray-900 mb-3">
             Ready to Start Your Journey?
           </h3>
@@ -225,7 +225,7 @@ const QASection = () => {
               const element = document.querySelector('#consultation');
               if (element) element.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 hover:shadow-lg inline-flex items-center space-x-2"
+            className="bg-blue-500 hover:bg-teal-600 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 hover:shadow-lg inline-flex items-center space-x-2"
           >
             <span>Book Your Free Consultation</span>
           </button>
