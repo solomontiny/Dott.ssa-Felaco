@@ -8,24 +8,23 @@ const AboutSection = () => {
     <section id="about" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-16 items-center">
-          {/* Clean, Professional Image */}
+          {/* Professional Image with Frame */}
           <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-white p-1">
+            <div className="relative bg-gradient-to-br from-blue-50 to-white rounded-2xl p-8 shadow-xl border-2 border-blue-100">
               <img
-                src="https://customer-assets.emergentagent.com/job_80398c3c-4f8a-434b-b923-133758dd4592/artifacts/9d1ictl1_WhatsApp%20Image%202026-02-03%20at%206.37.43%20PM.jpg"
+                src="https://customer-assets.emergentagent.com/job_80398c3c-4f8a-434b-b923-133758dd4592/artifacts/fc7j2qlu_WhatsApp_Image_2026-02-08_at_6.00.05_PM-removebg-preview.png"
                 alt="Dott.ssa Felaco Giuseppina - Nutritionist"
-                className="w-full h-auto object-cover object-center rounded-xl"
+                className="w-full h-auto object-contain"
                 style={{ 
-                  filter: 'contrast(1.08) saturate(1.05) brightness(1.03) sharpen(1)',
-                  imageRendering: 'crisp-edges',
-                  mixBlendMode: 'normal'
+                  filter: 'contrast(1.1) saturate(1.08) brightness(1.02) drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
+                  imageRendering: 'crisp-edges'
                 }}
               />
             </div>
             
-            {/* Simple owner label */}
+            {/* Professional label */}
             <div className="mt-6 text-center">
-              <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              <p className="text-sm font-medium text-blue-600 uppercase tracking-wider">
                 Founder & Nutritionist
               </p>
               <p className="text-xl font-serif text-gray-900 mt-1">
@@ -37,11 +36,11 @@ const AboutSection = () => {
           {/* Content */}
           <div className="space-y-6">
             <div>
-              <p className="text-teal-600 font-semibold tracking-wider text-sm mb-4 uppercase">
+              <p className="text-blue-600 font-semibold tracking-wider text-sm mb-4 uppercase">
                 {t('about.label')}
               </p>
               <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6">
-                {t('about.title')} <span className="text-teal-600 italic">{t('about.titleHighlight')}</span>
+                {t('about.title')} <span className="text-blue-600 italic">{t('about.titleHighlight')}</span>
               </h2>
             </div>
 
@@ -61,11 +60,11 @@ const AboutSection = () => {
             </div>
 
             {/* Clean quotes */}
-            <div className="border-l-4 border-teal-500 pl-6 py-4 space-y-3 bg-gray-50 rounded-r-lg">
+            <div className="border-l-4 border-blue-500 pl-6 py-4 space-y-3 bg-blue-50 rounded-r-lg">
               <blockquote className="text-lg italic text-gray-700">
                 "{t('about.quote1')}"
               </blockquote>
-              <blockquote className="text-lg italic text-teal-700 font-medium">
+              <blockquote className="text-lg italic text-blue-700 font-medium">
                 "{t('about.quote2')}"
               </blockquote>
             </div>
@@ -77,7 +76,7 @@ const AboutSection = () => {
                   const element = document.querySelector('#consultation');
                   if (element) element.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 hover:shadow-lg inline-flex items-center space-x-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 hover:shadow-lg inline-flex items-center space-x-2"
               >
                 <span>Prenota una Consulenza</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
