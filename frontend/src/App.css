@@ -122,18 +122,18 @@ body {
 }
 
 .react-calendar__tile--active {
-  background: #14b8a6 !important;
+  background: #3b82f6 !important;
   color: white !important;
   border-radius: 0.5rem !important;
 }
 
 .react-calendar__tile--now {
-  background: #f0fdfa !important;
+  background: #dbeafe !important;
   border-radius: 0.5rem !important;
 }
 
 .react-calendar__tile:enabled:hover {
-  background-color: #ccfbf1 !important;
+  background-color: #bfdbfe !important;
   border-radius: 0.5rem !important;
 }
 
