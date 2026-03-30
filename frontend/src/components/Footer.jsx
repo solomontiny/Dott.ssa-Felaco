@@ -1,9 +1,11 @@
 import React from 'react';
-import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   const socialLinks = [
     { platform: 'facebook', icon: Facebook, url: '#' },
@@ -93,16 +95,24 @@ const Footer = () => {
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">{t('footer.copyright')}</p>
-            <div className="flex space-x-6">
+            <div className="flex space-x-6 items-center">
               {policies.map((policy, index) => (
                 <a
                   key={index}
                   href={policy.href}
-                  className="text-gray-400 hover:text-teal-400 text-sm transition-colors duration-200"
+                  className="text-gray-400 hover:text-blue-400 text-sm transition-colors duration-200"
                 >
                   {policy.label}
                 </a>
               ))}
+              <button
+                data-testid="footer-admin-login-link"
+                onClick={() => navigate('/admin/login')}
+                className="flex items-center space-x-1 text-gray-500 hover:text-blue-400 text-sm transition-colors duration-200"
+              >
+                <Lock className="w-3 h-3" />
+                <span>Admin</span>
+              </button>
             </div>
           </div>
         </div>
