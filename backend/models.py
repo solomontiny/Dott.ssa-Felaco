@@ -4,6 +4,7 @@ from datetime import datetime
 import uuid
 
 
+# Article Models
 class Article(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
@@ -40,6 +41,7 @@ class ArticleUpdate(BaseModel):
     published: Optional[bool] = None
 
 
+# Auth Models
 class AdminLogin(BaseModel):
     email: EmailStr
 
@@ -47,3 +49,39 @@ class AdminLogin(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+# Status Check Models
+class StatusCheck(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    client_name: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+
+class StatusCheckCreate(BaseModel):
+    client_name: str
+
+
+# Consultation Models
+class ConsultationRequest(BaseModel):
+    name: str
+    email: EmailStr
+    phone: str
+    message: str
+    consent: bool
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+
+# Appointment Models
+class AppointmentRequest(BaseModel):
+    name: str
+    email: EmailStr
+    phone: str
+    date: str
+    time: str
+    type: str
+    notes: Optional[str] = ""
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "pending"
