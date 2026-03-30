@@ -192,7 +192,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" data-testid="admin-dashboard">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -203,12 +203,14 @@ const AdminDashboard = () => {
             </div>
             <div className="flex items-center space-x-4">
               <button
+                data-testid="view-website-link"
                 onClick={() => window.open('/', '_blank')}
                 className="text-sm text-gray-600 hover:text-blue-600"
               >
                 View Website
               </button>
               <Button
+                data-testid="admin-logout-btn"
                 onClick={handleLogout}
                 variant="outline"
                 className="flex items-center space-x-2"
@@ -232,6 +234,7 @@ const AdminDashboard = () => {
                 <p className="text-gray-600 mt-1">{articles.length} total articles</p>
               </div>
               <Button
+                data-testid="create-article-btn"
                 onClick={() => setShowEditor(true)}
                 className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
               >

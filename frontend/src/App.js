@@ -16,6 +16,7 @@ import ContactSection from "./components/ContactSection";
 import FinalCtaSection from "./components/FinalCtaSection";
 import Footer from "./components/Footer";
 import WhatsAppWidget from "./components/WhatsAppWidget";
+import BlogSection from "./components/BlogSection";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -32,6 +33,7 @@ const MainWebsite = () => {
       <QASection />
       <ConsultationForm />
       <TestimonialsSection />
+      <BlogSection />
       <AppointmentBooking />
       <ContactSection />
       <FinalCtaSection />

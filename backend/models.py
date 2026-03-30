@@ -44,6 +44,7 @@ class ArticleUpdate(BaseModel):
 # Auth Models
 class AdminLogin(BaseModel):
     email: EmailStr
+    password: str
 
 
 class TokenResponse(BaseModel):

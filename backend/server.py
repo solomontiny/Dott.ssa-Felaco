@@ -1,18 +1,22 @@
+from dotenv import load_dotenv
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
+
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File
 from fastapi.responses import FileResponse
-from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
-from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 import shutil
 
-from auth import get_current_admin, generate_magic_link_token, ADMIN_EMAIL
+from auth import get_current_admin, create_access_token, verify_password, hash_password, ADMIN_EMAIL
 from models import (
     Article, ArticleCreate, ArticleUpdate, 
     AdminLogin, TokenResponse,
@@ -28,9 +32,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
 
 # Create uploads directory
 UPLOAD_DIR = ROOT_DIR / 'uploads'
@@ -58,7 +60,7 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "dottssa-felaco-api",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 @api_router.post("/status", response_model=StatusCheck)
@@ -160,15 +162,28 @@ async def get_consultations():
 
 @api_router.post("/admin/login", response_model=TokenResponse)
 async def admin_login(login: AdminLogin):
-    """Admin login - generates JWT token for authenticated access"""
+    """Admin login with email and password"""
     try:
-        if login.email != ADMIN_EMAIL:
+        if login.email.lower() != ADMIN_EMAIL.lower():
             raise HTTPException(
                 status_code=403,
                 detail="Access denied. Only authorized admin can login."
             )
         
-        token = generate_magic_link_token(login.email)
+        user = await db.users.find_one({"email": ADMIN_EMAIL.lower()})
+        if not user:
+            raise HTTPException(
+                status_code=401,
+                detail="Admin account not found. Please contact support."
+            )
+        
+        if not verify_password(login.password, user["password_hash"]):
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid password."
+            )
+        
+        token = create_access_token(str(user.get("_id", "")), login.email)
         return TokenResponse(access_token=token, token_type="bearer")
     except HTTPException:
         raise
@@ -196,13 +211,14 @@ async def create_article(
         article_dict['id'] = str(uuid.uuid4())
         article_dict['slug'] = create_slug(article.title)
         article_dict['author'] = "Dott.ssa Felaco Giuseppina"
-        article_dict['created_at'] = datetime.utcnow()
-        article_dict['updated_at'] = datetime.utcnow()
+        article_dict['created_at'] = datetime.now(timezone.utc)
+        article_dict['updated_at'] = datetime.now(timezone.utc)
         
         if article.published:
-            article_dict['published_at'] = datetime.utcnow()
+            article_dict['published_at'] = datetime.now(timezone.utc)
         
         await db.articles.insert_one(article_dict)
+        article_dict.pop("_id", None)
         return Article(**article_dict)
     except Exception as e:
         logger.error(f"Error creating article: {str(e)}")
@@ -214,7 +230,7 @@ async def get_articles(published_only: bool = True, skip: int = 0, limit: int = 
     """Get all articles (public endpoint)"""
     try:
         query = {"published": True} if published_only else {}
-        articles = await db.articles.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+        articles = await db.articles.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
         total = await db.articles.count_documents(query)
         return {"success": True, "articles": articles, "total": total}
     except Exception as e:
@@ -226,7 +242,7 @@ async def get_articles(published_only: bool = True, skip: int = 0, limit: int = 
 async def get_article_by_slug(slug: str):
     """Get single article by slug (public endpoint)"""
     try:
-        article = await db.articles.find_one({"slug": slug, "published": True})
+        article = await db.articles.find_one({"slug": slug, "published": True}, {"_id": 0})
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
         return {"success": True, "article": article}
@@ -245,7 +261,7 @@ async def get_all_articles_admin(
 ):
     """Get all articles including unpublished (admin only)"""
     try:
-        articles = await db.articles.find().sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+        articles = await db.articles.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
         total = await db.articles.count_documents({})
         return {"success": True, "articles": articles, "total": total}
     except Exception as e:
@@ -260,7 +276,7 @@ async def get_article_by_id(
 ):
     """Get single article by ID (admin only)"""
     try:
-        article = await db.articles.find_one({"id": article_id})
+        article = await db.articles.find_one({"id": article_id}, {"_id": 0})
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
         return {"success": True, "article": article}
@@ -284,7 +300,7 @@ async def update_article(
             raise HTTPException(status_code=404, detail="Article not found")
         
         update_data = {k: v for k, v in article_update.dict().items() if v is not None}
-        update_data['updated_at'] = datetime.utcnow()
+        update_data['updated_at'] = datetime.now(timezone.utc)
         
         # Update title and slug
         if 'title' in update_data and update_data['title'] != existing.get('title'):
@@ -293,13 +309,13 @@ async def update_article(
         # Update published_at timestamp
         if 'published' in update_data:
             if update_data['published'] and not existing.get('published'):
-                update_data['published_at'] = datetime.utcnow()
+                update_data['published_at'] = datetime.now(timezone.utc)
             elif not update_data['published']:
                 update_data['published_at'] = None
         
         await db.articles.update_one({"id": article_id}, {"$set": update_data})
         
-        updated_article = await db.articles.find_one({"id": article_id})
+        updated_article = await db.articles.find_one({"id": article_id}, {"_id": 0})
         return {"success": True, "article": updated_article}
     except HTTPException:
         raise
@@ -375,7 +391,7 @@ async def health_check_root():
     return {
         "status": "healthy",
         "service": "dottssa-felaco-api",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 app.add_middleware(
@@ -385,6 +401,40 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Seed admin user on startup"""
+    try:
+        admin_email = os.environ.get("ADMIN_EMAIL", "dott.giuseppinafelaco@gmail.com").lower()
+        admin_password = os.environ.get("ADMIN_PASSWORD", "FelacAdmin2026!")
+        
+        existing = await db.users.find_one({"email": admin_email})
+        if existing is None:
+            hashed = hash_password(admin_password)
+            await db.users.insert_one({
+                "email": admin_email,
+                "password_hash": hashed,
+                "name": "Dott.ssa Felaco Giuseppina",
+                "role": "admin",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            })
+            logger.info(f"Admin user seeded: {admin_email}")
+        elif not verify_password(admin_password, existing["password_hash"]):
+            await db.users.update_one(
+                {"email": admin_email},
+                {"$set": {"password_hash": hash_password(admin_password)}}
+            )
+            logger.info(f"Admin password updated: {admin_email}")
+        else:
+            logger.info(f"Admin user already exists: {admin_email}")
+        
+        # Create indexes
+        await db.users.create_index("email", unique=True)
+    except Exception as e:
+        logger.error(f"Error seeding admin: {str(e)}")
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
