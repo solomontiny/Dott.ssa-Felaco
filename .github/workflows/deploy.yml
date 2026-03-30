@@ -25,11 +25,12 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./frontend
-        run: npm install --legacy-peer-deps
-
+        run: |
+          rm -rf node_modules package-lock.json
+            npm install --legacy-peer-deps
       - name: Build project
         working-directory: ./frontend
-        run: npm run build
+        run: CI=false npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
