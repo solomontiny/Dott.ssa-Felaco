@@ -1,18 +1,32 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
+import shutil
+
+from auth import get_current_admin, generate_magic_link_token, ADMIN_EMAIL
+from models import (
+    Article, ArticleCreate, ArticleUpdate, 
+    AdminLogin, TokenResponse,
+    StatusCheck, StatusCheckCreate
+)
+from utils import create_slug
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Create uploads directory
+UPLOAD_DIR = ROOT_DIR / 'uploads'
+UPLOAD_DIR.mkdir(exist_ok=True)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -24,39 +38,6 @@ app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-
-
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-class ConsultationRequest(BaseModel):
-    name: str
-    email: EmailStr
-    phone: str
-    message: str
-    consent: bool
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-
-class AppointmentRequest(BaseModel):
-    name: str
-    email: EmailStr
-    phone: str
-    date: str
-    time: str
-    type: str
-    notes: Optional[str] = ""
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    status: str = "pending"
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
