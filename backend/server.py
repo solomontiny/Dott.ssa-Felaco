@@ -141,17 +141,221 @@ async def get_appointments():
 @api_router.get("/consultations")
 async def get_consultations():
     try:
-        consultations = await db.consultations.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
-        
-        # Convert ISO string timestamps back to datetime objects
-        for consultation in consultations:
-            if isinstance(consultation['created_at'], str):
-                consultation['created_at'] = datetime.fromisoformat(consultation['created_at'])
-        
+        consultations = await db.consultations.find().sort("created_at", -1).to_list(100)
         return {"success": True, "consultations": consultations}
     except Exception as e:
         logger.error(f"Error fetching consultations: {str(e)}")
         raise HTTPException(status_code=500, detail="Error fetching consultations")
+
+
+# ============= ADMIN AUTH ENDPOINTS =============
+
+@api_router.post("/admin/login", response_model=TokenResponse)
+async def admin_login(login: AdminLogin):
+    """Admin login - generates JWT token for authenticated access"""
+    try:
+        if login.email != ADMIN_EMAIL:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied. Only authorized admin can login."
+            )
+        
+        token = generate_magic_link_token(login.email)
+        return TokenResponse(access_token=token, token_type="bearer")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in admin login: {str(e)}")
+        raise HTTPException(status_code=500, detail="Login error")
+
+
+@api_router.get("/admin/verify")
+async def verify_admin(current_admin: dict = Depends(get_current_admin)):
+    """Verify if the token is valid"""
+    return {"valid": True, "email": current_admin.get("sub")}
+
+
+# ============= ARTICLE MANAGEMENT ENDPOINTS =============
+
+@api_router.post("/admin/articles", response_model=Article)
+async def create_article(
+    article: ArticleCreate,
+    current_admin: dict = Depends(get_current_admin)
+):
+    """Create a new article (admin only)"""
+    try:
+        article_dict = article.dict()
+        article_dict['id'] = str(uuid.uuid4())
+        article_dict['slug'] = create_slug(article.title)
+        article_dict['author'] = "Dott.ssa Felaco Giuseppina"
+        article_dict['created_at'] = datetime.utcnow()
+        article_dict['updated_at'] = datetime.utcnow()
+        
+        if article.published:
+            article_dict['published_at'] = datetime.utcnow()
+        
+        await db.articles.insert_one(article_dict)
+        return Article(**article_dict)
+    except Exception as e:
+        logger.error(f"Error creating article: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error creating article")
+
+
+@api_router.get("/articles")
+async def get_articles(published_only: bool = True, skip: int = 0, limit: int = 20):
+    """Get all articles (public endpoint)"""
+    try:
+        query = {"published": True} if published_only else {}
+        articles = await db.articles.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+        total = await db.articles.count_documents(query)
+        return {"success": True, "articles": articles, "total": total}
+    except Exception as e:
+        logger.error(f"Error fetching articles: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching articles")
+
+
+@api_router.get("/articles/{slug}")
+async def get_article_by_slug(slug: str):
+    """Get single article by slug (public endpoint)"""
+    try:
+        article = await db.articles.find_one({"slug": slug, "published": True})
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        return {"success": True, "article": article}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching article: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching article")
+
+
+@api_router.get("/admin/articles")
+async def get_all_articles_admin(
+    current_admin: dict = Depends(get_current_admin),
+    skip: int = 0,
+    limit: int = 50
+):
+    """Get all articles including unpublished (admin only)"""
+    try:
+        articles = await db.articles.find().sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+        total = await db.articles.count_documents({})
+        return {"success": True, "articles": articles, "total": total}
+    except Exception as e:
+        logger.error(f"Error fetching articles: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching articles")
+
+
+@api_router.get("/admin/articles/{article_id}")
+async def get_article_by_id(
+    article_id: str,
+    current_admin: dict = Depends(get_current_admin)
+):
+    """Get single article by ID (admin only)"""
+    try:
+        article = await db.articles.find_one({"id": article_id})
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        return {"success": True, "article": article}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching article: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching article")
+
+
+@api_router.put("/admin/articles/{article_id}")
+async def update_article(
+    article_id: str,
+    article_update: ArticleUpdate,
+    current_admin: dict = Depends(get_current_admin)
+):
+    """Update an article (admin only)"""
+    try:
+        existing = await db.articles.find_one({"id": article_id})
+        if not existing:
+            raise HTTPException(status_code=404, detail="Article not found")
+        
+        update_data = {k: v for k, v in article_update.dict().items() if v is not None}
+        update_data['updated_at'] = datetime.utcnow()
+        
+        # Update title and slug
+        if 'title' in update_data and update_data['title'] != existing.get('title'):
+            update_data['slug'] = create_slug(update_data['title'])
+        
+        # Update published_at timestamp
+        if 'published' in update_data:
+            if update_data['published'] and not existing.get('published'):
+                update_data['published_at'] = datetime.utcnow()
+            elif not update_data['published']:
+                update_data['published_at'] = None
+        
+        await db.articles.update_one({"id": article_id}, {"$set": update_data})
+        
+        updated_article = await db.articles.find_one({"id": article_id})
+        return {"success": True, "article": updated_article}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating article: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error updating article")
+
+
+@api_router.delete("/admin/articles/{article_id}")
+async def delete_article(
+    article_id: str,
+    current_admin: dict = Depends(get_current_admin)
+):
+    """Delete an article (admin only)"""
+    try:
+        result = await db.articles.delete_one({"id": article_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Article not found")
+        return {"success": True, "message": "Article deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting article: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error deleting article")
+
+
+@api_router.post("/admin/upload-image")
+async def upload_image(
+    file: UploadFile = File(...),
+    current_admin: dict = Depends(get_current_admin)
+):
+    """Upload image for article (admin only)"""
+    try:
+        # Validate file type
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail="File must be an image")
+        
+        # Generate unique filename
+        file_extension = file.filename.split('.')[-1]
+        unique_filename = f"{uuid.uuid4()}.{file_extension}"
+        file_path = UPLOAD_DIR / unique_filename
+        
+        # Save file
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Return URL
+        image_url = f"/api/uploads/{unique_filename}"
+        return {"success": True, "image_url": image_url}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error uploading image: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error uploading image")
+
+
+@api_router.get("/uploads/{filename}")
+async def get_uploaded_file(filename: str):
+    """Serve uploaded images"""
+    file_path = UPLOAD_DIR / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(file_path)
+
 
 # Include the router in the main app
 app.include_router(api_router)
