@@ -16,7 +16,8 @@ from auth import get_current_admin, generate_magic_link_token, ADMIN_EMAIL
 from models import (
     Article, ArticleCreate, ArticleUpdate, 
     AdminLogin, TokenResponse,
-    StatusCheck, StatusCheckCreate
+    StatusCheck, StatusCheckCreate,
+    ConsultationRequest, AppointmentRequest
 )
 from utils import create_slug
 
