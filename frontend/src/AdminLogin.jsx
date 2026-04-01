@@ -3,7 +3,7 @@ import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth, provider } from "./firebase";
 
-const allowedEmail = "scotttinys@gmail.com";
+const allowedEmail = "dott.giuseppinafelaco@gmail.com";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
