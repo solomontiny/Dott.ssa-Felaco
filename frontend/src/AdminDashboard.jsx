@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AdminDashboard = ({ onLogout }) => {
+const AdminDashboard = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [articles, setArticles] = useState([]);
+
+  const navigate = useNavigate();
 
   const handlePublish = () => {
     if (!title.trim() || !content.trim()) {
@@ -26,9 +29,10 @@ const AdminDashboard = ({ onLogout }) => {
     setImage(null);
   };
 
-const handleLogout = () => {
-  onLogout();
-};
+  const handleLogout = () => {
+    navigate("/admin/login");
+  };
+
   return (
     <div
       style={{
@@ -44,7 +48,6 @@ const handleLogout = () => {
           margin: "0 auto",
         }}
       >
-        {/* Top Header */}
         <div
           style={{
             backgroundColor: "#ffffff",
@@ -97,7 +100,6 @@ const handleLogout = () => {
           </button>
         </div>
 
-        {/* Main Grid */}
         <div
           style={{
             display: "grid",
@@ -106,7 +108,6 @@ const handleLogout = () => {
             alignItems: "start",
           }}
         >
-          {/* Left Section */}
           <div
             style={{
               backgroundColor: "#ffffff",
@@ -230,7 +231,6 @@ const handleLogout = () => {
             </button>
           </div>
 
-          {/* Right Section */}
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             <div
               style={{

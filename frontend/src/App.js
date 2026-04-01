@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import "./i18n/config";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import ThreeFocusSection from "./components/ThreeFocusSection";
@@ -17,11 +17,10 @@ import FinalCtaSection from "./components/FinalCtaSection";
 import Footer from "./components/Footer";
 import WhatsAppWidget from "./components/WhatsAppWidget";
 import BlogSection from "./components/BlogSection";
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./AdminLogin";
+import AdminDashboard from "./AdminDashboard";
 
-// Main Website Component
-const MainWebsite = () => {
+function MainWebsite() {
   return (
     <>
       <Navbar />
@@ -33,36 +32,26 @@ const MainWebsite = () => {
       <QASection />
       <ConsultationForm />
       <TestimonialsSection />
-      <BlogSection />
       <AppointmentBooking />
+      <BlogSection />
       <ContactSection />
       <FinalCtaSection />
       <Footer />
       <WhatsAppWidget />
     </>
   );
-};
+}
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          {/* Main Website */}
-          <Route path="/" element={<MainWebsite />} />
-          
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          
-          {/* Redirect /admin to /admin/login */}
-          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
-          
-          {/* 404 - Redirect to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<MainWebsite />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </HashRouter>
   );
 }
 

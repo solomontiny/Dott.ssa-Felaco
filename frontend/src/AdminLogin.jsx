@@ -1,10 +1,13 @@
 import React from "react";
 import { signInWithPopup } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import { auth, provider } from "./firebase";
 
 const allowedEmail = "scotttinys@gmail.com";
 
-const AdminLogin = ({ onLoginSuccess }) => {
+const AdminLogin = () => {
+  const navigate = useNavigate();
+
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -16,7 +19,7 @@ const AdminLogin = ({ onLoginSuccess }) => {
       }
 
       alert("Login successful");
-      onLoginSuccess();
+      navigate("/admin/dashboard");
     } catch (error) {
       console.error("Firebase login error:", error);
       alert(`Login failed: ${error.code} - ${error.message}`);
@@ -30,15 +33,16 @@ const AdminLogin = ({ onLoginSuccess }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "#f5f5f5",
+        backgroundColor: "#f3f4f6",
+        fontFamily: "Arial, sans-serif",
       }}
     >
       <div
         style={{
-          background: "#fff",
+          backgroundColor: "#fff",
           padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+          borderRadius: "16px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           textAlign: "center",
           width: "320px",
         }}
@@ -47,17 +51,16 @@ const AdminLogin = ({ onLoginSuccess }) => {
 
         <button
           onClick={handleLogin}
-          type="button"
           style={{
-            width: "100%",
-            padding: "12px 16px",
             backgroundColor: "#2563eb",
             color: "#fff",
             border: "none",
-            borderRadius: "8px",
+            padding: "14px 20px",
+            borderRadius: "10px",
             fontSize: "16px",
-            fontWeight: "600",
+            fontWeight: "bold",
             cursor: "pointer",
+            width: "100%",
           }}
         >
           Login with Google
