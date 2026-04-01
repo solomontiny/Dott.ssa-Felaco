@@ -43,48 +43,51 @@ const AdminDashboard = () => {
     fetchArticles();
   }, []);
 
-  const handlePublish = async () => {
-    if (!title.trim() || !content.trim()) {
-      alert("Please fill in title and content");
-      return;
+ const handlePublish = async () => {
+  if (!title.trim() || !content.trim()) {
+    alert("Please fill in title and content");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    let fileUrl = "";
+    let fileName = "";
+    let fileType = "";
+
+    if (image) {
+      const uploadedFileName = `${Date.now()}-${image.name}`;
+      const storageRef = ref(storage, `articles/${uploadedFileName}`);
+      await uploadBytes(storageRef, image);
+      fileUrl = await getDownloadURL(storageRef);
+      fileName = image.name;
+      fileType = image.type;
     }
 
-    try {
-      setLoading(true);
+    await addDoc(collection(db, "articles"), {
+      title,
+      content,
+      fileUrl,
+      fileName,
+      fileType,
+      createdAt: Date.now(),
+      date: new Date().toLocaleDateString(),
+    });
 
-      let imageUrl = "";
-      let imageName = "";
+    setTitle("");
+    setContent("");
+    setImage(null);
 
-      if (image) {
-        const fileName = `${Date.now()}-${image.name}`;
-        const storageRef = ref(storage, `articles/${fileName}`);
-        await uploadBytes(storageRef, image);
-        imageUrl = await getDownloadURL(storageRef);
-        imageName = image.name;
-      }
-
-      await addDoc(collection(db, "articles"), {
-        title,
-        content,
-        imageUrl,
-        imageName,
-        createdAt: Date.now(),
-        date: new Date().toLocaleDateString(),
-      });
-
-      setTitle("");
-      setContent("");
-      setImage(null);
-
-      await fetchArticles();
-      alert("Article published successfully");
-    } catch (error) {
-      console.error("Error publishing article:", error);
-      alert("Failed to publish article");
-    } finally {
-      setLoading(false);
-    }
-  };
+    await fetchArticles();
+    alert("Article published successfully");
+  } catch (error) {
+    console.error("Error publishing article:", error);
+    alert("Failed to publish article");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleLogout = () => {
     navigate("/admin/login");
@@ -253,10 +256,11 @@ const AdminDashboard = () => {
                 Upload Image
               </label>
               <input
-                type="file"
-                onChange={(e) => setImage(e.target.files[0])}
-                style={{ fontSize: "14px" }}
-              />
+  type="file"
+  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
+  onChange={(e) => setImage(e.target.files[0])}
+  style={{ fontSize: "14px" }}
+/>
               {image && (
                 <p
                   style={{
@@ -370,20 +374,38 @@ const AdminDashboard = () => {
                       {article.title}
                     </h3>
 
-                    {article.imageUrl && (
-                      <img
-                        src={article.imageUrl}
-                        alt={article.title}
-                        style={{
-                          width: "100%",
-                          maxHeight: "180px",
-                          objectFit: "cover",
-                          borderRadius: "10px",
-                          marginBottom: "10px",
-                        }}
-                      />
-                    )}
+                    {(article.fileUrl || article.imageUrl) &&
+  ((article.fileType && article.fileType.startsWith("image/")) || article.imageUrl) && (
+    <img
+      src={article.fileUrl || article.imageUrl}
+      alt={article.title}
+      style={{
+        width: "100%",
+        maxHeight: "180px",
+        objectFit: "cover",
+        borderRadius: "10px",
+        marginBottom: "10px",
+      }}
+    />
+)}
 
+{article.fileUrl &&
+  article.fileType &&
+  !article.fileType.startsWith("image/") && (
+    <a
+      href={article.fileUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "inline-block",
+        marginTop: "10px",
+        color: "#1e40af",
+        fontWeight: "bold",
+      }}
+    >
+      View / Download {article.fileName || "Attachment"}
+    </a>
+)}
                     <p
                       style={{
                         margin: "0 0 10px 0",
