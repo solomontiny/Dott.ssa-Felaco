@@ -1,13 +1,10 @@
 import { initializeApp } from "firebase/app";
-import {
-  initializeAuth,
-  browserLocalPersistence,
-  browserPopupRedirectResolver,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-   apiKey: "AIzaSyB9Tf6BMss_21HlSxdWZEprMyi66G0nmHk",
+  apiKey: "AIzaSyB9Tf6BMss_21H1SxdWZEprMyi66GQnmHk",
   authDomain: "dottssa-felaco-admin.firebaseapp.com",
   projectId: "dottssa-felaco-admin",
   storageBucket: "dottssa-felaco-admin.firebasestorage.app",
@@ -17,14 +14,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const auth = initializeAuth(app, {
-  persistence: browserLocalPersistence,
-  popupRedirectResolver: browserPopupRedirectResolver,
-});
+export const auth = getAuth(app);
+export const provider = new GoogleAuthProvider();
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({
-  prompt: "select_account",
-});
-
-export { auth, provider };
+export default app;

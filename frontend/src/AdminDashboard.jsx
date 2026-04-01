@@ -1,32 +1,89 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { db, storage } from "./firebase";
 
 const AdminDashboard = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handlePublish = () => {
+  const fetchArticles = async () => {
+    try {
+      const q = query(collection(db, "articles"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+
+      const articleList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setArticles(articleList);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  const handlePublish = async () => {
     if (!title.trim() || !content.trim()) {
       alert("Please fill in title and content");
       return;
     }
 
-    const newArticle = {
-      id: Date.now(),
-      title,
-      content,
-      imageName: image ? image.name : "",
-      date: new Date().toLocaleDateString(),
-    };
+    try {
+      setLoading(true);
 
-    setArticles([newArticle, ...articles]);
-    setTitle("");
-    setContent("");
-    setImage(null);
+      let imageUrl = "";
+      let imageName = "";
+
+      if (image) {
+        const fileName = `${Date.now()}-${image.name}`;
+        const storageRef = ref(storage, `articles/${fileName}`);
+        await uploadBytes(storageRef, image);
+        imageUrl = await getDownloadURL(storageRef);
+        imageName = image.name;
+      }
+
+      await addDoc(collection(db, "articles"), {
+        title,
+        content,
+        imageUrl,
+        imageName,
+        createdAt: Date.now(),
+        date: new Date().toLocaleDateString(),
+      });
+
+      setTitle("");
+      setContent("");
+      setImage(null);
+
+      await fetchArticles();
+      alert("Article published successfully");
+    } catch (error) {
+      console.error("Error publishing article:", error);
+      alert("Failed to publish article");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
@@ -216,6 +273,7 @@ const AdminDashboard = () => {
 
             <button
               onClick={handlePublish}
+              disabled={loading}
               style={{
                 backgroundColor: "#0f172a",
                 color: "#ffffff",
@@ -225,9 +283,10 @@ const AdminDashboard = () => {
                 fontSize: "15px",
                 fontWeight: "bold",
                 cursor: "pointer",
+                opacity: loading ? 0.7 : 1,
               }}
             >
-              Publish Article
+              {loading ? "Publishing..." : "Publish Article"}
             </button>
           </div>
 
@@ -310,6 +369,21 @@ const AdminDashboard = () => {
                     >
                       {article.title}
                     </h3>
+
+                    {article.imageUrl && (
+                      <img
+                        src={article.imageUrl}
+                        alt={article.title}
+                        style={{
+                          width: "100%",
+                          maxHeight: "180px",
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          marginBottom: "10px",
+                        }}
+                      />
+                    )}
+
                     <p
                       style={{
                         margin: "0 0 10px 0",
@@ -322,6 +396,7 @@ const AdminDashboard = () => {
                         ? article.content.substring(0, 120) + "..."
                         : article.content}
                     </p>
+
                     <p
                       style={{
                         margin: "0 0 4px 0",
@@ -331,6 +406,7 @@ const AdminDashboard = () => {
                     >
                       Date: {article.date}
                     </p>
+
                     {article.imageName && (
                       <p
                         style={{
