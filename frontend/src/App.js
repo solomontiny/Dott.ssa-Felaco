@@ -17,8 +17,8 @@ import FinalCtaSection from "./components/FinalCtaSection";
 import Footer from "./components/Footer";
 import WhatsAppWidget from "./components/WhatsAppWidget";
 import BlogSection from "./components/BlogSection";
-import AdminLogin from "./AdminLogin";
-import AdminDashboard from "./AdminDashboard";
+import AdminLogin from "./pages/AdminLoginPage";
+import AdminDashboard from "./pages/AdminDashboardPage";
 
 function MainWebsite() {
   return (

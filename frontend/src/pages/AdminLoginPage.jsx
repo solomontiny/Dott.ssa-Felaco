@@ -7,18 +7,27 @@ import { Input } from '../components/ui/input';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
-const AdminLogin = () => {
+const AdminLoginPage = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('admin_token')) {
       navigate('/admin/dashboard');
     }
   }, [navigate]);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  const buildBackendUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const base = BACKEND_URL || '';
+    return base
+      ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+      : `/${path.replace(/^\/+/, '')}`;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,7 +35,7 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/admin/login`, {
+      const response = await axios.post(buildBackendUrl('/api/admin/login'), {
         email,
         password,
       });
@@ -41,9 +50,9 @@ const AdminLogin = () => {
       if (typeof detail === 'string') {
         setError(detail);
       } else if (Array.isArray(detail)) {
-        setError(detail.map((e) => e.msg || JSON.stringify(e)).join(' '));
+        setError(detail.map((item) => item.msg || JSON.stringify(item)).join(' '));
       } else {
-        setError('Login failed. Please try again.');
+        setError('Login failed. Please check your credentials and try again.');
       }
     } finally {
       setIsLoading(false);
@@ -61,15 +70,13 @@ const AdminLogin = () => {
             <Lock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Login</h1>
-          <p className="text-gray-600">Dott.ssa Felaco - Article Management</p>
+          <p className="text-gray-600">Accedi all'area amministrativa per gestire il sito.</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           <form onSubmit={handleLogin} className="space-y-6" data-testid="admin-login-form">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Admin Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email amministratore</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
@@ -77,7 +84,7 @@ const AdminLogin = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@example.com"
+                  placeholder="sojirin.solomon@yahoo.com"
                   required
                   className="pl-10 w-full"
                 />
@@ -85,9 +92,7 @@ const AdminLogin = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
@@ -95,7 +100,7 @@ const AdminLogin = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="Inserisci la tua password"
                   required
                   className="pl-10 w-full"
                 />
@@ -118,7 +123,7 @@ const AdminLogin = () => {
               disabled={isLoading}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-full font-medium text-lg"
             >
-              {isLoading ? 'Logging in...' : 'Login to Dashboard'}
+              {isLoading ? 'Accesso in corso...' : 'Accedi'}
             </Button>
           </form>
 
@@ -128,7 +133,7 @@ const AdminLogin = () => {
               onClick={() => navigate('/')}
               className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
             >
-              Back to Website
+              Torna al sito
             </button>
           </div>
         </div>
@@ -137,4 +142,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default AdminLoginPage;

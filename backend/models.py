@@ -13,7 +13,8 @@ class Article(BaseModel):
     content: str
     image_url: Optional[str] = None
     category: str
-    tags: List[str] = []
+    tags: List[str] = Field(default_factory=list)
+    language: str = "it"
     published: bool = False
     author: str = "Dott.ssa Felaco Giuseppina"
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -27,7 +28,8 @@ class ArticleCreate(BaseModel):
     content: str
     image_url: Optional[str] = None
     category: str
-    tags: List[str] = []
+    tags: List[str] = Field(default_factory=list)
+    language: str = "it"
     published: bool = False
 
 
@@ -38,6 +40,7 @@ class ArticleUpdate(BaseModel):
     image_url: Optional[str] = None
     category: Optional[str] = None
     tags: Optional[List[str]] = None
+    language: Optional[str] = None
     published: Optional[bool] = None
 
 

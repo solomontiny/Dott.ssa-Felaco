@@ -7,11 +7,11 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8000').rstrip('/')
 
 # Test credentials from /app/memory/test_credentials.md
-ADMIN_EMAIL = "dott.giuseppinafelaco@gmail.com"
-ADMIN_PASSWORD = "FelacAdmin2026!"
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'sojirin.solomon@yahoo.com')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'Admin123')
 WRONG_PASSWORD = "WrongPassword123!"
 WRONG_EMAIL = "wrong@example.com"
 

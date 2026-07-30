@@ -10,7 +10,16 @@ import 'react-calendar/dist/Calendar.css';
 import 'react-phone-input-2/lib/style.css';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+const buildBackendUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  const base = BACKEND_URL || '';
+  return base
+    ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+    : `/${path.replace(/^\/+/, '')}`;
+};
 
 const AppointmentBooking = () => {
   const { t } = useTranslation();
@@ -65,7 +74,7 @@ const AppointmentBooking = () => {
         date: formData.date.toISOString().split('T')[0]
       };
       
-      const response = await axios.post(`${BACKEND_URL}/api/appointment`, appointmentData);
+      const response = await axios.post(buildBackendUrl('/api/appointment'), appointmentData);
       
       if (response.data.success) {
         setStatus({ type: 'success', message: t('appointment.form.success') });

@@ -39,9 +39,9 @@ UPLOAD_DIR = ROOT_DIR / 'uploads'
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[os.environ.get('DB_NAME', 'dottssa_felaco')]
 
 # Create the main app without a prefix
 app = FastAPI()
@@ -213,9 +213,10 @@ async def create_article(
         article_dict['author'] = "Dott.ssa Felaco Giuseppina"
         article_dict['created_at'] = datetime.now(timezone.utc)
         article_dict['updated_at'] = datetime.now(timezone.utc)
+        article_dict['language'] = getattr(article, 'language', 'it') or 'it'
         
         if article.published:
-            article_dict['published_at'] = datetime.now(timezone.utc)
+           article_dict['published_at'] = datetime.now(timezone.utc)
         
         await db.articles.insert_one(article_dict)
         article_dict.pop("_id", None)
@@ -226,10 +227,25 @@ async def create_article(
 
 
 @api_router.get("/articles")
-async def get_articles(published_only: bool = True, skip: int = 0, limit: int = 20):
+async def get_articles(
+    published_only: bool = True,
+    language: str = 'it',
+    skip: int = 0,
+    limit: int = 20
+):
     """Get all articles (public endpoint)"""
     try:
         query = {"published": True} if published_only else {}
+        if language:
+            normalized_language = language.lower()
+            if normalized_language == 'it':
+                query['$or'] = [
+                    {"language": normalized_language},
+                    {"language": {"$exists": False}}
+                ]
+            else:
+                query["language"] = normalized_language
+
         articles = await db.articles.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
         total = await db.articles.count_documents(query)
         return {"success": True, "articles": articles, "total": total}
@@ -305,6 +321,9 @@ async def update_article(
         # Update title and slug
         if 'title' in update_data and update_data['title'] != existing.get('title'):
             update_data['slug'] = create_slug(update_data['title'])
+
+        if 'language' in update_data and update_data['language']:
+            update_data['language'] = update_data['language'].lower()
         
         # Update published_at timestamp
         if 'published' in update_data:
@@ -407,8 +426,8 @@ app.add_middleware(
 async def startup_event():
     """Seed admin user on startup"""
     try:
-        admin_email = os.environ.get("ADMIN_EMAIL", "dott.giuseppinafelaco@gmail.com").lower()
-        admin_password = os.environ.get("ADMIN_PASSWORD", "FelacAdmin2026!")
+        admin_email = os.environ.get("ADMIN_EMAIL", "sojirin.solomon@yahoo.com").lower()
+        admin_password = os.environ.get("ADMIN_PASSWORD", "Admin123")
         
         existing = await db.users.find_one({"email": admin_email})
         if existing is None:
@@ -439,3 +458,11 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+
+if __name__ == '__main__':
+    # Allow running the backend directly with `python server.py` for local dev
+    import uvicorn
+
+    port = int(os.environ.get('PORT', 8000))
+    uvicorn.run('server:app', host='0.0.0.0', port=port, log_level='info')

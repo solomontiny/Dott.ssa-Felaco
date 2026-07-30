@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+const buildBackendUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  const base = BACKEND_URL || '';
+  return base
+    ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+    : `/${path.replace(/^\/+/, '')}`;
+};
 
 const STATIC_POSTS = [
   {
@@ -45,12 +55,14 @@ const categories = [
 ];
 
 const BlogSection = () => {
+  const { i18n } = useTranslation();
   const [posts, setPosts] = useState(STATIC_POSTS);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await axios.get(`${BACKEND_URL}/api/articles?published_only=true&limit=4`);
+        const language = i18n.language || 'it';
+        const res = await axios.get(`${buildBackendUrl('/api/articles')}?published_only=true&limit=4&language=${language}`);
         if (res.data.articles && res.data.articles.length > 0) {
           setPosts(res.data.articles);
         }
@@ -59,7 +71,7 @@ const BlogSection = () => {
       }
     };
     fetchArticles();
-  }, []);
+  }, [i18n.language]);
 
   const formatDate = (dateStr) => {
     try {

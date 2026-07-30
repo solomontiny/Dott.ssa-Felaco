@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 import { 
   LogOut, Plus, Edit, Trash2, Eye, EyeOff, 
@@ -9,7 +10,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -27,9 +28,22 @@ const AdminDashboard = () => {
     published: false
   });
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [dragActive, setDragActive] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
 
   const token = localStorage.getItem('admin_token');
-  const adminEmail = localStorage.getItem('admin_email');
+  const adminEmail = localStorage.getItem('admin_email') || 'Admin';
+
+  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const buildBackendUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const base = BACKEND_URL || window.location.origin;
+    return `${base.replace(/\/+$|$/, '')}/${path.replace(/^\/+/, '')}`;
+  };
 
   useEffect(() => {
     if (!token) {

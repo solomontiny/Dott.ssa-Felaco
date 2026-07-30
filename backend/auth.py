@@ -8,13 +8,13 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
-ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "dott.giuseppinafelaco@gmail.com")
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "sojirin.solomon@yahoo.com")
 
 security = HTTPBearer()
 
 
 def get_jwt_secret() -> str:
-    return os.environ["JWT_SECRET"]
+    return os.environ.get("JWT_SECRET", "change-me-please")
 
 
 def hash_password(password: str) -> str:

@@ -8,7 +8,16 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+const buildBackendUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  const base = BACKEND_URL || '';
+  return base
+    ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+    : `/${path.replace(/^\/+/, '')}`;
+};
 
 const ConsultationForm = () => {
   const { t } = useTranslation();
@@ -46,7 +55,7 @@ const ConsultationForm = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/consultation`, formData);
+      const response = await axios.post(buildBackendUrl('/api/consultation'), formData);
       
       if (response.data.success) {
         setStatus({ type: 'success', message: t('consultation.form.success') });
