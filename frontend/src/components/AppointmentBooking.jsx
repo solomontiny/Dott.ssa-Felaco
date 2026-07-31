@@ -8,18 +8,7 @@ import PhoneInput from 'react-phone-input-2';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import 'react-phone-input-2/lib/style.css';
-import axios from 'axios';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-
-const buildBackendUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http')) return path;
-  const base = BACKEND_URL || '';
-  return base
-    ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
-    : `/${path.replace(/^\/+/, '')}`;
-};
+import { supabase } from '../lib/supabaseClient';
 
 const AppointmentBooking = () => {
   const { t } = useTranslation();
@@ -74,9 +63,10 @@ const AppointmentBooking = () => {
         date: formData.date.toISOString().split('T')[0]
       };
       
-      const response = await axios.post(buildBackendUrl('/api/appointment'), appointmentData);
+      const { data, error } = await supabase.from('appointments').insert(appointmentData).select().single();
       
-      if (response.data.success) {
+      if (error) throw error;
+      if (data) {
         setStatus({ type: 'success', message: t('appointment.form.success') });
         setFormData({
           name: '',

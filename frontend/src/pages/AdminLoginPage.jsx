@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, AlertCircle, KeyRound } from 'lucide-react';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+import { useAuth } from '../hooks/useAuth';
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
@@ -14,20 +12,13 @@ const AdminLoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const { user, loading, signIn } = useAuth();
+
   useEffect(() => {
-    if (localStorage.getItem('admin_token')) {
+    if (user) {
       navigate('/admin/dashboard');
     }
-  }, [navigate]);
-
-  const buildBackendUrl = (path) => {
-    if (!path) return '';
-    if (path.startsWith('http')) return path;
-    const base = BACKEND_URL || '';
-    return base
-      ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
-      : `/${path.replace(/^\/+/, '')}`;
-  };
+  }, [user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -35,25 +26,15 @@ const AdminLoginPage = () => {
     setError('');
 
     try {
-      const response = await axios.post(buildBackendUrl('/api/admin/login'), {
-        email,
-        password,
-      });
-
-      if (response.data.access_token) {
-        localStorage.setItem('admin_token', response.data.access_token);
-        localStorage.setItem('admin_email', email);
+      const res = await signIn(email, password);
+      if (res.error) {
+        setError(res.error.message || 'Autenticazione fallita');
+      } else {
         navigate('/admin/dashboard');
       }
     } catch (err) {
-      const detail = err.response?.data?.detail;
-      if (typeof detail === 'string') {
-        setError(detail);
-      } else if (Array.isArray(detail)) {
-        setError(detail.map((item) => item.msg || JSON.stringify(item)).join(' '));
-      } else {
-        setError('Login failed. Please check your credentials and try again.');
-      }
+      const msg = err?.message || err?.error?.message || 'Login failed. Please check your credentials and try again.';
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -120,10 +101,10 @@ const AdminLoginPage = () => {
             <Button
               data-testid="admin-login-submit"
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || loading}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-full font-medium text-lg"
             >
-              {isLoading ? 'Accesso in corso...' : 'Accedi'}
+              {isLoading || loading ? 'Accesso in corso...' : 'Accedi'}
             </Button>
           </form>
 

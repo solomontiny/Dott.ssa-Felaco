@@ -400,69 +400,22 @@ async def get_uploaded_file(filename: str):
     return FileResponse(file_path)
 
 
-# Include the router in the main app
-app.include_router(api_router)
+"""
+Python backend removed — replaced by Supabase migration plan and frontend integration.
 
-# Health check endpoint for Kubernetes (without /api prefix)
-@app.get("/health")
-async def health_check_root():
-    """Health check endpoint for Kubernetes liveness and readiness probes"""
-    return {
-        "status": "healthy",
-        "service": "dottssa-felaco-api",
-        "timestamp": datetime.now(timezone.utc).isoformat()
-    }
+This file was intentionally replaced during the migration to Supabase. The original
+FastAPI/MongoDB/Python implementation has been archived and removed from active use.
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+If you need the previous backend code for reference, retrieve it from your Git
+history. The frontend has been prepared to use Supabase via
+frontend/src/lib/supabaseClient.js and lightweight hooks in frontend/src/hooks/.
 
+To deploy with Supabase, set the following environment variables in your frontend
+Cloudflare/GitHub Pages environment (or in a local .env):
 
-@app.on_event("startup")
-async def startup_event():
-    """Seed admin user on startup"""
-    try:
-        admin_email = os.environ.get("ADMIN_EMAIL", "sojirin.solomon@yahoo.com").lower()
-        admin_password = os.environ.get("ADMIN_PASSWORD", "Admin123")
-        
-        existing = await db.users.find_one({"email": admin_email})
-        if existing is None:
-            hashed = hash_password(admin_password)
-            await db.users.insert_one({
-                "email": admin_email,
-                "password_hash": hashed,
-                "name": "Dott.ssa Felaco Giuseppina",
-                "role": "admin",
-                "created_at": datetime.now(timezone.utc).isoformat(),
-            })
-            logger.info(f"Admin user seeded: {admin_email}")
-        elif not verify_password(admin_password, existing["password_hash"]):
-            await db.users.update_one(
-                {"email": admin_email},
-                {"$set": {"password_hash": hash_password(admin_password)}}
-            )
-            logger.info(f"Admin password updated: {admin_email}")
-        else:
-            logger.info(f"Admin user already exists: {admin_email}")
-        
-        # Create indexes
-        await db.users.create_index("email", unique=True)
-    except Exception as e:
-        logger.error(f"Error seeding admin: {str(e)}")
+  REACT_APP_SUPABASE_URL
+  REACT_APP_SUPABASE_ANON_KEY
 
+"""
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
-
-
-if __name__ == '__main__':
-    # Allow running the backend directly with `python server.py` for local dev
-    import uvicorn
-
-    port = int(os.environ.get('PORT', 8000))
-    uvicorn.run('server:app', host='0.0.0.0', port=port, log_level='info')
+raise SystemExit("Python backend removed. Use Supabase integration instead.")

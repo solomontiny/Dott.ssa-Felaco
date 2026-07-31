@@ -5,7 +5,9 @@ import {
   LogOut, Plus, Edit, Trash2, Eye, EyeOff, 
   FileText, Image as ImageIcon, Save, X 
 } from 'lucide-react';
-import axios from 'axios';
+import { useAuth } from '../hooks/useAuth';
+import { useArticles } from '../hooks/useArticles';
+import { uploadFile, getPublicUrl } from '../hooks/useStorage';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -33,45 +35,36 @@ const AdminDashboard = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPreview, setShowPreview] = useState(false);
 
-  const token = localStorage.getItem('admin_token');
-  const adminEmail = localStorage.getItem('admin_email') || 'Admin';
-
-  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
-
-  const buildBackendUrl = (path) => {
-    if (!path) return '';
-    if (path.startsWith('http')) return path;
-    const base = BACKEND_URL || window.location.origin;
-    return `${base.replace(/\/+$|$/, '')}/${path.replace(/^\/+/, '')}`;
-  };
+  const { user, signOut } = useAuth();
+  const { list, create, update, remove } = useArticles();
+  const adminEmail = user?.email || 'Admin';
 
   useEffect(() => {
-    if (!token) {
+    if (!user) {
       navigate('/admin/login');
       return;
     }
     fetchArticles();
-  }, [token, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, navigate]);
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/admin/articles`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setArticles(response.data.articles || []);
+      const data = await list({ limit: 100, language: 'it', published_only: false });
+      setArticles(data || []);
     } catch (error) {
       console.error('Error fetching articles:', error);
-      if (error.response?.status === 401) {
-        handleLogout();
-      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_email');
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } catch (e) {
+      // ignore
+    }
     navigate('/admin/login');
   };
 

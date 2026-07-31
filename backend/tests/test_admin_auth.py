@@ -1,61 +1,10 @@
 """
-Backend API Tests for Dott.ssa Felaco Admin System
-Tests: Admin authentication, article CRUD, public endpoints
+Backend tests removed during Supabase migration.
+These tests targeted the previous FastAPI backend and should be rewritten to test
+Supabase-based endpoints and behaviour instead.
 """
-import pytest
-import requests
-import os
-import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8000').rstrip('/')
-
-# Test credentials from /app/memory/test_credentials.md
-ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'sojirin.solomon@yahoo.com')
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'Admin123')
-WRONG_PASSWORD = "WrongPassword123!"
-WRONG_EMAIL = "wrong@example.com"
-
-
-class TestHealthEndpoint:
-    """Health check endpoint tests"""
-    
-    def test_health_check(self):
-        """Test /api/health returns healthy status"""
-        response = requests.get(f"{BASE_URL}/api/health")
-        assert response.status_code == 200
-        data = response.json()
-        assert data["status"] == "healthy"
-        assert "timestamp" in data
-        print("✓ Health check passed")
-
-
-class TestAdminAuthentication:
-    """Admin login endpoint tests"""
-    
-    def test_admin_login_success(self):
-        """Test admin login with correct credentials"""
-        response = requests.post(f"{BASE_URL}/api/admin/login", json={
-            "email": ADMIN_EMAIL,
-            "password": ADMIN_PASSWORD
-        })
-        assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
-        data = response.json()
-        assert "access_token" in data, "Response should contain access_token"
-        assert data["token_type"] == "bearer"
-        assert len(data["access_token"]) > 0
-        print("✓ Admin login with correct credentials passed")
-    
-    def test_admin_login_wrong_password(self):
-        """Test admin login with wrong password returns 401"""
-        response = requests.post(f"{BASE_URL}/api/admin/login", json={
-            "email": ADMIN_EMAIL,
-            "password": WRONG_PASSWORD
-        })
-        assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        data = response.json()
-        assert "detail" in data
-        assert "Invalid password" in data["detail"]
-        print("✓ Admin login with wrong password returns 401")
+# Remove or rewrite tests to run against Supabase or new integration tests.
     
     def test_admin_login_wrong_email(self):
         """Test admin login with wrong email returns 403 (access denied)"""

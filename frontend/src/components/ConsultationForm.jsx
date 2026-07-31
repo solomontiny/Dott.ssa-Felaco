@@ -6,18 +6,8 @@ import { Textarea } from './ui/textarea';
 import { CheckCircle, AlertCircle, Send } from 'lucide-react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import axios from 'axios';
+import { supabase } from '../lib/supabaseClient';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-
-const buildBackendUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http')) return path;
-  const base = BACKEND_URL || '';
-  return base
-    ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
-    : `/${path.replace(/^\/+/, '')}`;
-};
 
 const ConsultationForm = () => {
   const { t } = useTranslation();
@@ -55,9 +45,9 @@ const ConsultationForm = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await axios.post(buildBackendUrl('/api/consultation'), formData);
-      
-      if (response.data.success) {
+      const { data, error } = await supabase.from('consultations').insert({ ...formData, created_at: new Date().toISOString() }).select().single();
+      if (error) throw error;
+      if (data) {
         setStatus({ type: 'success', message: t('consultation.form.success') });
         setFormData({
           name: '',

@@ -13,24 +13,18 @@ import {
   X,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-
-const buildBackendUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http')) return path;
-  const base = BACKEND_URL || '';
-  return base
-    ? `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
-    : `/${path.replace(/^\/+/, '')}`;
-};
+import { useAuth } from '../hooks/useAuth';
+import { useArticles } from '../hooks/useArticles';
+import { uploadFile, getPublicUrl } from '../hooks/useStorage';
 
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { loading: articlesLoading, list, create, update, remove } = useArticles();
+
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
@@ -53,13 +47,8 @@ const AdminDashboardPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPreview, setShowPreview] = useState(false);
 
-  const token = localStorage.getItem('admin_token');
-  const adminEmail = localStorage.getItem('admin_email') || 'Admin';
-
-  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
-
   useEffect(() => {
-    if (!token) {
+    if (!user) {
       navigate('/admin/login');
       return;
     }
@@ -67,30 +56,23 @@ const AdminDashboardPage = () => {
     const initializeDashboard = async () => {
       try {
         setIsLoading(true);
-        await axios.get(buildBackendUrl('/api/admin/verify'), {
-          headers: authHeaders,
-        });
         await Promise.all([fetchArticles(), fetchMetrics()]);
       } catch (error) {
-        console.error('Error verifying admin token:', error);
+        console.error('Error initializing dashboard:', error);
         handleLogout();
       }
     };
 
     initializeDashboard();
-  }, [token, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, navigate]);
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get(buildBackendUrl('/api/admin/articles'), {
-        headers: authHeaders,
-      });
-      setArticles(response.data.articles || []);
+      const data = await list({ limit: 100, language: 'it', published_only: false });
+      setArticles(data || []);
     } catch (error) {
       console.error('Error fetching articles:', error);
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        handleLogout();
-      }
     } finally {
       setIsLoading(false);
     }
@@ -98,22 +80,22 @@ const AdminDashboardPage = () => {
 
   const fetchMetrics = async () => {
     try {
-      const [appointmentsRes, consultationsRes] = await Promise.all([
-        axios.get(buildBackendUrl('/api/appointments')),
-        axios.get(buildBackendUrl('/api/consultations')),
-      ]);
-
-      setAppointmentsCount(appointmentsRes.data.appointments?.length || 0);
-      setConsultationsCount(consultationsRes.data.consultations?.length || 0);
+      // Minimal metrics: count appointments & consultations
+      const { data: appts, error: apptsErr } = await (await import('../lib/supabaseClient')).supabase.from('appointments').select('*');
+      const { data: consults, error: consultErr } = await (await import('../lib/supabaseClient')).supabase.from('consultations').select('*');
+      setAppointmentsCount(appts?.length || 0);
+      setConsultationsCount(consults?.length || 0);
     } catch (error) {
       console.warn('Unable to load appointment or consultation metrics:', error);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_email');
-    navigate('/admin/login');
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } finally {
+      navigate('/admin/login');
+    }
   };
 
   const handleFileUpload = async (file) => {
@@ -122,23 +104,13 @@ const AdminDashboardPage = () => {
     setUploadingImage(true);
     setUploadProgress(0);
 
-    const payload = new FormData();
-    payload.append('file', file);
-
     try {
-      const response = await axios.post(buildBackendUrl('/api/admin/upload-image'), payload, {
-        headers: authHeaders,
-        onUploadProgress: (progressEvent) => {
-          if (progressEvent.total) {
-            setUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
-          }
-        },
-      });
-
-      setFormData((prev) => ({
-        ...prev,
-        image_url: buildBackendUrl(response.data.image_url),
-      }));
+      const bucket = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'media';
+      const path = `${Date.now()}-${file.name}`;
+      const res = await uploadFile(bucket, path, file);
+      if (res.error) throw res.error;
+      const publicUrl = getPublicUrl(bucket, path).publicUrl;
+      setFormData((prev) => ({ ...prev, image_url: publicUrl }));
     } catch (error) {
       console.error('Error uploading image:', error);
       setErrorMessage('Impossibile caricare l'immagine. Riprova più tardi.');
@@ -179,13 +151,9 @@ const AdminDashboardPage = () => {
 
     try {
       if (editingArticle) {
-        await axios.put(buildBackendUrl(`/api/admin/articles/${editingArticle.id}`), articleData, {
-          headers: authHeaders,
-        });
+        await update(editingArticle.id, articleData);
       } else {
-        await axios.post(buildBackendUrl('/api/admin/articles'), articleData, {
-          headers: authHeaders,
-        });
+        await create(articleData);
       }
 
       await fetchArticles();
@@ -216,9 +184,7 @@ const AdminDashboardPage = () => {
     if (!window.confirm('Sei sicuro di voler eliminare questo articolo?')) return;
 
     try {
-      await axios.delete(buildBackendUrl(`/api/admin/articles/${articleId}`), {
-        headers: authHeaders,
-      });
+      await remove(articleId);
       await fetchArticles();
     } catch (error) {
       console.error('Error deleting article:', error);
@@ -228,11 +194,7 @@ const AdminDashboardPage = () => {
 
   const togglePublish = async (article) => {
     try {
-      await axios.put(buildBackendUrl(`/api/admin/articles/${article.id}`), {
-        published: !article.published,
-      }, {
-        headers: authHeaders,
-      });
+      await update(article.id, { published: !article.published });
       await fetchArticles();
     } catch (error) {
       console.error('Error toggling publish:', error);

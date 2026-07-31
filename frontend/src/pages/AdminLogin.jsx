@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, AlertCircle, KeyRound } from 'lucide-react';
-import axios from 'axios';
+import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+// Supabase auth is used; REACT_APP_BACKEND_URL is no longer needed for login
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -21,34 +21,23 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+      e.preventDefault();
+      setIsLoading(true);
+      setError('');
 
-    try {
-      const response = await axios.post(`${BACKEND_URL}/api/admin/login`, {
-        email,
-        password,
-      });
-
-      if (response.data.access_token) {
-        localStorage.setItem('admin_token', response.data.access_token);
-        localStorage.setItem('admin_email', email);
-        navigate('/admin/dashboard');
+      try {
+        const res = await signIn(email, password);
+        if (res.error) {
+          setError(res.error.message || 'Login failed. Please try again.');
+        } else {
+          navigate('/admin/dashboard');
+        }
+      } catch (err) {
+        setError(err?.message || 'Login failed. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      const detail = err.response?.data?.detail;
-      if (typeof detail === 'string') {
-        setError(detail);
-      } else if (Array.isArray(detail)) {
-        setError(detail.map((e) => e.msg || JSON.stringify(e)).join(' '));
-      } else {
-        setError('Login failed. Please try again.');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
   return (
     <div
