@@ -17,9 +17,11 @@ insert into public.articles (
   excerpt,
   content,
   language,
+  category,
   category_id,
   tags,
   featured_image,
+  image_url,
   gallery_images,
   featured,
   published,
@@ -36,8 +38,10 @@ values (
   'Uno sguardo pratico su prevenzione, famiglie e scuola.',
   '<h2>Prevenzione e collaborazione</h2><p>Per ridurre l obesità infantile occorre collaborazione tra famiglie, scuole e professionisti della salute.</p>',
   'it',
+  'Nutrizionista',
   (select id from public.article_categories where slug = 'nutrizionista' limit 1),
   array['prevenzione', 'famiglia', 'scuola'],
+  'https://images.unsplash.com/photo-1566895733044-d2bdda8b6234?w=1200&h=800&fit=crop',
   'https://images.unsplash.com/photo-1566895733044-d2bdda8b6234?w=1200&h=800&fit=crop',
   array['https://images.unsplash.com/photo-1566895733044-d2bdda8b6234?w=900&h=600&fit=crop'],
   true,
@@ -55,8 +59,10 @@ values (
   'A practical article about sustainable wellness habits.',
   '<h2>Prevention starts with daily habits</h2><p>Consistent routines, mindful eating, and education are the foundation of long-term wellness.</p>',
   'en',
+  'Nutrition',
   (select id from public.article_categories where slug = 'nutrition' limit 1),
   array['wellness', 'prevention', 'habits'],
+  'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=1200&h=800&fit=crop',
   'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=1200&h=800&fit=crop',
   array['https://images.unsplash.com/photo-1543362906-acfc16c67564?w=900&h=600&fit=crop'],
   false,
@@ -73,9 +79,9 @@ values
   (gen_random_uuid(), 'Training educativo alimentare', 'training-educativo-alimentare', 'Cambiare attraverso la conoscenza del cibo', '{"highlight": "Conoscenza e consapevolezza"}', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop', 1, true, 'it'),
   (gen_random_uuid(), 'Emotional nutrition support', 'emotional-nutrition-support', 'Supportive guidance for mindful and sustainable change', '{"highlight": "Mindful routines"}', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop', 2, false, 'en');
 
-insert into public.gallery (id, title, description, media_ids, published)
+insert into public.gallery (id, title, description, images, media_ids, published)
 values
-  (gen_random_uuid(), 'Studio e benessere', 'Immagini del servizio di nutrizione e supporto', array[]::uuid[], true);
+  (gen_random_uuid(), 'Studio e benessere', 'Immagini del servizio di nutrizione e supporto', array['https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop'], array[]::uuid[], true);
 
 insert into public.homepage_content (id, section_key, content, language)
 values
