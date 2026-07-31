@@ -3,7 +3,7 @@
 -- Storage buckets used by the website and admin dashboard
 -- =============================================================
 
--- 1) Create storage buckets
+-- Create buckets explicitly so the frontend can upload media to the expected bucket names
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values
   ('media', 'media', true, 5242880, array['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'application/pdf']),
@@ -16,13 +16,13 @@ on conflict (id) do update set
   file_size_limit = excluded.file_size_limit,
   allowed_mime_types = excluded.allowed_mime_types;
 
--- 2) Public read access for all public buckets
+-- Enable public reads for the public bucket family.
 create policy "Public read media bucket objects"
 on storage.objects
 for select
 using (bucket_id in ('media', 'gallery', 'logos', 'banners', 'documents'));
 
--- 3) Admin-only upload / overwrite / delete for all buckets.
+-- Admins can upload, overwrite, and delete files in any bucket.
 create policy "Admin upload media bucket objects"
 on storage.objects
 for insert
@@ -55,4 +55,4 @@ using (
   and public.is_admin()
 );
 
--- Optional: keep the media_files metadata table in sync with storage uploads via trigger or app code.
+-- Optional: keep media metadata in sync via app code. The metadata table is defined in the migration.
