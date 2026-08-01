@@ -17,6 +17,16 @@ begin
 end;
 $$;
 
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  role text not null default 'admin' check (role in ('admin', 'editor')),
+  full_name text,
+  avatar_url text,
+  is_admin boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create or replace function public.is_admin()
 returns boolean
 language sql
@@ -30,16 +40,6 @@ as $$
     where p.id = auth.uid()
   ), false);
 $$;
-
-create table if not exists public.profiles (
-  id uuid primary key references auth.users(id) on delete cascade,
-  role text not null default 'admin' check (role in ('admin', 'editor')),
-  full_name text,
-  avatar_url text,
-  is_admin boolean not null default false,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
 
 create table if not exists public.article_categories (
   id uuid primary key default gen_random_uuid(),
@@ -61,11 +61,9 @@ create table if not exists public.articles (
   language text not null default 'it' check (language in ('it', 'en', 'fr', 'es')),
   category text,
   category_id uuid references public.article_categories(id) on delete set null,
-  category text,
   image_url text,
   tags text[] not null default '{}',
   featured_image text,
-  image_url text,
   gallery_images text[] not null default '{}',
   featured boolean not null default false,
   published boolean not null default false,
@@ -100,7 +98,6 @@ create table if not exists public.gallery (
   description text,
   images text[] not null default '{}',
   media_ids uuid[] not null default '{}',
-  images text[] not null default '{}',
   published boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -144,11 +141,9 @@ create table if not exists public.appointments (
   phone text not null,
   date date,
   appointment_date date,
-  date date,
   appointment_time text,
   type text,
   appointment_type text,
-  type text,
   notes text,
   status text not null default 'new' check (status in ('new', 'confirmed', 'completed', 'cancelled')),
   created_at timestamptz not null default now(),

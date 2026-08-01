@@ -72,7 +72,7 @@ const handlers = {
     const published_only = searchParams.get('published_only') !== 'false';
     const limit = parseInt(searchParams.get('limit') || '20', 10);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
-    const language = searchParams.get('language') || 'it';
+    const language = searchParams.get('language') || 'en';
 
     let query = supaClient.from('articles').select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(offset, offset + limit - 1);
     if (published_only) query = query.eq('published', true);

@@ -1,18 +1,55 @@
-import { storage } from '../lib/supabaseClient';
+import { supabase } from "../lib/supabaseClient";
 
-// Simple storage helpers for Supabase storage
-export async function uploadFile(bucket, path, file, opts = {}) {
-  const res = await storage.uploadFile(bucket, path, file, opts);
-  if (res.error) throw res.error;
-  return res;
+const DEFAULT_BUCKET = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'media';
+
+// Upload file to Supabase Storage using the current authenticated session.
+export async function uploadFile(bucket = DEFAULT_BUCKET, path, file, options = {}) {
+  if (!file) {
+    throw new Error("No file provided");
+  }
+
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError || !sessionData?.session?.user) {
+    throw new Error("Authenticated Supabase session is required to upload media.");
+  }
+
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+      ...options,
+    });
+
+  if (error) {
+    console.error("Supabase upload error:", error);
+    throw error;
+  }
+
+  return data;
 }
 
-export function getPublicUrl(bucket, path) {
-  return storage.getPublicUrl(bucket, path);
+// Get public URL
+export function getPublicUrl(bucket = DEFAULT_BUCKET, path) {
+  const { data, error } = supabase.storage.from(bucket).getPublicUrl(path);
+
+  if (error) {
+    throw error;
+  }
+
+  return data.publicUrl;
 }
 
-export async function removeFile(bucket, path) {
-  const res = await storage.remove(bucket, path);
-  if (res.error) throw res.error;
-  return res;
+// Delete file
+export async function removeFile(bucket = DEFAULT_BUCKET, path) {
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .remove([path]);
+
+  if (error) {
+    console.error("Supabase delete error:", error);
+    throw error;
+  }
+
+  return data;
 }

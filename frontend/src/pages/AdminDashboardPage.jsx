@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   LogOut,
   Plus,
@@ -23,6 +24,7 @@ import { uploadFile, getPublicUrl } from '../hooks/useStorage';
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { i18n } = useTranslation();
   const { loading: articlesLoading, list, create, update, remove } = useArticles();
 
   const [articles, setArticles] = useState([]);
@@ -34,8 +36,9 @@ const AdminDashboardPage = () => {
     excerpt: '',
     content: '',
     category: '',
-    language: 'it',
+    language: i18n.language || 'en',
     tags: '',
+    featured_image: '',
     image_url: '',
     published: false,
   });
@@ -69,7 +72,8 @@ const AdminDashboardPage = () => {
 
   const fetchArticles = async () => {
     try {
-      const data = await list({ limit: 100, language: 'it', published_only: false });
+      const currentLanguage = i18n.language || 'en';
+      const data = await list({ limit: 100, language: currentLanguage, published_only: false });
       setArticles(data || []);
     } catch (error) {
       console.error('Error fetching articles:', error);
@@ -109,11 +113,15 @@ const AdminDashboardPage = () => {
       const path = `${Date.now()}-${file.name}`;
       const res = await uploadFile(bucket, path, file);
       if (res.error) throw res.error;
-      const publicUrl = getPublicUrl(bucket, path).publicUrl;
-      setFormData((prev) => ({ ...prev, image_url: publicUrl }));
+      const publicUrl = getPublicUrl(bucket, path);
+      setFormData((prev) => ({
+        ...prev,
+        featured_image: publicUrl,
+        image_url: publicUrl,
+      }));
     } catch (error) {
       console.error('Error uploading image:', error);
-      setErrorMessage('Impossibile caricare l'immagine. Riprova più tardi.');
+      setErrorMessage('Unable to upload the image. Please try again later.');
     } finally {
       setUploadingImage(false);
       setUploadProgress(0);
@@ -140,13 +148,24 @@ const AdminDashboardPage = () => {
     setErrorMessage('');
 
     if (!formData.title.trim() || !formData.excerpt.trim() || !formData.content.trim()) {
-      setErrorMessage('Titolo, estratto e contenuto sono obbligatori.');
+      setErrorMessage('Title, excerpt, and content are required.');
       return;
     }
 
     const articleData = {
-      ...formData,
-      tags: formData.tags.split(',').map((tag) => tag.trim()).filter(Boolean),
+      title: formData.title.trim(),
+      excerpt: formData.excerpt.trim(),
+      content: formData.content.trim(),
+      category: formData.category.trim(),
+      language: formData.language || 'en',
+      tags: formData.tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      featured_image: formData.featured_image || formData.image_url || null,
+      image_url: formData.image_url || formData.featured_image || null,
+      published: Boolean(formData.published),
+      status: formData.published ? 'published' : 'draft',
     };
 
     try {
@@ -160,7 +179,7 @@ const AdminDashboardPage = () => {
       resetForm();
     } catch (error) {
       console.error('Error saving article:', error);
-      setErrorMessage('Salvataggio dell'articolo non riuscito. Controlla i dati e riprova.');
+      setErrorMessage('Saving the article failed. Please review the values and try again.');
     }
   };
 
@@ -171,9 +190,10 @@ const AdminDashboardPage = () => {
       excerpt: article.excerpt,
       content: article.content,
       category: article.category,
-      language: article.language || 'it',
+      language: article.language || i18n.language || 'en',
       tags: article.tags?.join(', ') || '',
-      image_url: article.image_url || '',
+      featured_image: article.featured_image || article.image_url || '',
+      image_url: article.image_url || article.featured_image || '',
       published: article.published,
     });
     setShowPreview(false);
@@ -181,14 +201,14 @@ const AdminDashboardPage = () => {
   };
 
   const handleDelete = async (articleId) => {
-    if (!window.confirm('Sei sicuro di voler eliminare questo articolo?')) return;
+    if (!window.confirm('Are you sure you want to delete this article?')) return;
 
     try {
       await remove(articleId);
       await fetchArticles();
     } catch (error) {
       console.error('Error deleting article:', error);
-      setErrorMessage('Eliminazione articolo non riuscita.');
+      setErrorMessage('Article deletion failed.');
     }
   };
 
@@ -198,7 +218,7 @@ const AdminDashboardPage = () => {
       await fetchArticles();
     } catch (error) {
       console.error('Error toggling publish:', error);
-      setErrorMessage('Impossibile aggiornare lo stato di pubblicazione.');
+      setErrorMessage('Unable to update the publication status.');
     }
   };
 
@@ -208,7 +228,9 @@ const AdminDashboardPage = () => {
       excerpt: '',
       content: '',
       category: '',
+      language: i18n.language || 'en',
       tags: '',
+      featured_image: '',
       image_url: '',
       published: false,
     });
@@ -225,7 +247,7 @@ const AdminDashboardPage = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Caricamento dashboard...</p>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -238,7 +260,7 @@ const AdminDashboardPage = () => {
           <div className="flex justify-between items-center h-16">
             <div>
               <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm text-gray-600">{adminEmail}</p>
+              <p className="text-sm text-gray-600">{user?.email || ''}</p>
             </div>
             <div className="flex items-center space-x-4">
               <button
@@ -267,8 +289,8 @@ const AdminDashboardPage = () => {
           <>
             <div className="flex justify-between items-center mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Articoli</h2>
-                <p className="text-gray-600 mt-1">{articles.length} articoli totali</p>
+                <h2 className="text-2xl font-bold text-gray-900">Articles</h2>
+                <p className="text-gray-600 mt-1">{articles.length} total articles</p>
               </div>
               <Button
                 data-testid="create-article-btn"
@@ -276,25 +298,25 @@ const AdminDashboardPage = () => {
                 className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
               >
                 <Plus className="w-5 h-5" />
-                <span>Crea nuovo articolo</span>
+                <span>Create article</span>
               </Button>
             </div>
 
             <div className="grid gap-4 mb-8 md:grid-cols-3">
               <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                <p className="text-sm uppercase tracking-wide text-gray-500">Articoli</p>
+                <p className="text-sm uppercase tracking-wide text-gray-500">Articles</p>
                 <p className="mt-4 text-3xl font-semibold text-gray-900">{articles.length}</p>
-                <p className="mt-2 text-sm text-gray-600">Articoli pubblicati e bozze</p>
+                <p className="mt-2 text-sm text-gray-600">Published articles and drafts</p>
               </div>
               <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                <p className="text-sm uppercase tracking-wide text-gray-500">Appuntamenti</p>
+                <p className="text-sm uppercase tracking-wide text-gray-500">Appointments</p>
                 <p className="mt-4 text-3xl font-semibold text-gray-900">{appointmentsCount}</p>
-                <p className="mt-2 text-sm text-gray-600">Richieste di appuntamento ricevute</p>
+                <p className="mt-2 text-sm text-gray-600">Appointment requests received</p>
               </div>
               <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                <p className="text-sm uppercase tracking-wide text-gray-500">Consultazioni</p>
+                <p className="text-sm uppercase tracking-wide text-gray-500">Consultations</p>
                 <p className="mt-4 text-3xl font-semibold text-gray-900">{consultationsCount}</p>
-                <p className="mt-2 text-sm text-gray-600">Richieste di consulenza</p>
+                <p className="mt-2 text-sm text-gray-600">Consultation requests</p>
               </div>
             </div>
 
@@ -302,7 +324,7 @@ const AdminDashboardPage = () => {
               {articles.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
                   <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Nessun articolo presente. Crea il primo articolo!</p>
+                  <p className="text-gray-600">No articles yet. Create the first one now.</p>
                 </div>
               ) : (
                 articles.map((article) => (
@@ -321,23 +343,23 @@ const AdminDashboardPage = () => {
                                 : 'bg-gray-100 text-gray-800'
                             }`}
                           >
-                            {article.published ? 'Pubblicato' : 'Bozza'}
+                            {article.published ? 'Published' : 'Draft'}
                           </span>
                         </div>
                         <p className="text-gray-600 text-sm mb-2">{article.excerpt}</p>
                         <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <span>Categoria: {article.category}</span>
+                          <span>Category: {article.category}</span>
                           <span>•</span>
                           <span>{article.language?.toUpperCase() || 'IT'}</span>
                           <span>•</span>
-                          <span>{new Date(article.created_at).toLocaleDateString('it-IT')}</span>
+                          <span>{new Date(article.created_at).toLocaleDateString('en-US')}</span>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2 ml-4">
                         <button
                           onClick={() => togglePublish(article)}
                           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                          title={article.published ? 'Rimuovi pubblicazione' : 'Pubblica'}
+                          title={article.published ? 'Remove publication' : 'Publish'}
                         >
                           {article.published ? (
                             <EyeOff className="w-5 h-5 text-gray-600" />
@@ -368,7 +390,7 @@ const AdminDashboardPage = () => {
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900">
-                {editingArticle ? 'Modifica articolo' : 'Crea nuovo articolo'}
+                {editingArticle ? 'Edit article' : 'Create article'}
               </h2>
               <Button
                 onClick={resetForm}
@@ -376,7 +398,7 @@ const AdminDashboardPage = () => {
                 className="flex items-center space-x-2"
               >
                 <X className="w-4 h-4" />
-                <span>Annulla</span>
+                <span>Cancel</span>
               </Button>
             </div>
 
@@ -388,21 +410,21 @@ const AdminDashboardPage = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Titolo *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Title *</label>
                 <Input
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Titolo dell'articolo"
+                  placeholder="Article title"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Estratto *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Excerpt *</label>
                 <Textarea
                   value={formData.excerpt}
                   onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                  placeholder="Breve riassunto dell'articolo"
+                  placeholder="Short summary of the article"
                   rows={3}
                   required
                 />
@@ -410,25 +432,25 @@ const AdminDashboardPage = () => {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Contenuto *</label>
+                  <label className="block text-sm font-medium text-gray-700">Content *</label>
                   <button
                     type="button"
                     onClick={() => setShowPreview((prev) => !prev)}
                     className="text-sm text-blue-600 hover:text-blue-800"
                   >
-                    {showPreview ? 'Modifica' : 'Anteprima'}
+                    {showPreview ? 'Edit' : 'Preview'}
                   </button>
                 </div>
 
                 {showPreview ? (
                   <div className="prose max-w-full rounded-xl border border-gray-200 bg-slate-50 p-5 text-slate-900">
-                    <ReactMarkdown>{formData.content || 'Usa il campo di modifica per inserire contenuti in Markdown.'}</ReactMarkdown>
+                    <ReactMarkdown>{formData.content || 'Use the editor field to write Markdown content.'}</ReactMarkdown>
                   </div>
                 ) : (
                   <Textarea
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                    placeholder="Scrivi il contenuto dell'articolo qui..."
+                    placeholder="Write the article content here..."
                     rows={12}
                     required
                   />
@@ -437,39 +459,39 @@ const AdminDashboardPage = () => {
 
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Categoria *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
                   <Input
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    placeholder="E.g. Nutrizione, Benessere"
+                    placeholder="E.g. Nutrition, Wellness"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Lingua</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
                   <select
                     value={formData.language}
                     onChange={(e) => setFormData({ ...formData, language: e.target.value })}
                     className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                   >
-                    <option value="it">Italiano</option>
+                    <option value="it">Italian</option>
                     <option value="en">English</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tag (separati da virgola)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tags (comma separated)</label>
                   <Input
                     value={formData.tags}
                     onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                    placeholder="salute, nutrizione, consigli"
+                    placeholder="health, nutrition, tips"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Immagine in evidenza</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Featured image</label>
                 <div
                   onDragOver={(event) => {
                     event.preventDefault();
@@ -484,10 +506,10 @@ const AdminDashboardPage = () => {
                   <div className="flex flex-col items-center justify-center text-center gap-3">
                     <ImageIcon className="w-6 h-6 text-gray-500" />
                     <p className="text-sm text-gray-600">
-                      Trascina un'immagine qui, oppure selezionala manualmente.
+                      Drag an image here or browse manually.
                     </p>
                     <label className="cursor-pointer inline-flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
-                      <span>{uploadingImage ? 'Caricamento...' : 'Carica immagine'}</span>
+                      <span>{uploadingImage ? 'Uploading...' : 'Upload image'}</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -512,10 +534,10 @@ const AdminDashboardPage = () => {
                   <div className="mt-4 flex items-center gap-4">
                     <img
                       src={formData.image_url}
-                      alt="Anteprima immagine"
+                      alt="Uploaded image preview"
                       className="h-16 w-16 rounded-lg object-cover"
                     />
-                    <span className="text-sm text-gray-600">Anteprima immagine caricata</span>
+                    <span className="text-sm text-gray-600">Uploaded image preview</span>
                   </div>
                 )}
               </div>
@@ -529,7 +551,7 @@ const AdminDashboardPage = () => {
                   id="publishToggle"
                 />
                 <label htmlFor="publishToggle" className="text-sm text-gray-700">
-                  Pubblica immediatamente
+                  Publish immediately
                 </label>
               </div>
 
@@ -539,10 +561,10 @@ const AdminDashboardPage = () => {
                   className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center space-x-2"
                 >
                   <Save className="w-5 h-5" />
-                  <span>{editingArticle ? 'Aggiorna articolo' : 'Crea articolo'}</span>
+                  <span>{editingArticle ? 'Update article' : 'Create article'}</span>
                 </Button>
                 <Button type="button" onClick={resetForm} variant="outline">
-                  Annulla
+                  Cancel
                 </Button>
               </div>
             </form>

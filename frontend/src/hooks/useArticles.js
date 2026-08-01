@@ -6,7 +6,7 @@ import { db } from '../lib/supabaseClient';
 export function useArticles() {
   const [loading, setLoading] = useState(false);
 
-  const list = async ({ limit = 20, offset = 0, language = 'it', published_only = true } = {}) => {
+  const list = async ({ limit = 20, offset = 0, language = 'en', published_only = true } = {}) => {
     setLoading(true);
     const res = await db.articles.list({ limit, offset, language, published_only });
     setLoading(false);

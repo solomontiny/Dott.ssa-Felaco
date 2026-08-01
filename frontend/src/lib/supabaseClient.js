@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+const STORAGE_BUCKET = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'media';
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   // Do not throw here to avoid breaking dev builds; log a warning so developers know to set env vars.
@@ -21,6 +22,63 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
   },
 });
+
+function toSlug(value = '') {
+  return String(value)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function sanitizeArticlePayload(payload = {}) {
+  const cleaned = { ...payload };
+
+  Object.keys(cleaned).forEach((key) => {
+    if (cleaned[key] === undefined || cleaned[key] === null) {
+      delete cleaned[key];
+    }
+  });
+
+  if (typeof cleaned.tags === 'string') {
+    cleaned.tags = cleaned.tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+  }
+
+  if (!Array.isArray(cleaned.tags)) {
+    cleaned.tags = [];
+  }
+
+  if (!Array.isArray(cleaned.gallery_images)) {
+    cleaned.gallery_images = [];
+  }
+
+  if (!cleaned.slug && cleaned.title) {
+    cleaned.slug = `${toSlug(cleaned.title)}-${Date.now()}`;
+  }
+
+  if (!cleaned.status) {
+    cleaned.status = cleaned.published ? 'published' : 'draft';
+  }
+
+  if (cleaned.featured_image === undefined && cleaned.image_url) {
+    cleaned.featured_image = cleaned.image_url;
+  }
+
+  if (cleaned.image_url === undefined && cleaned.featured_image) {
+    cleaned.image_url = cleaned.featured_image;
+  }
+
+  if (cleaned.published === undefined) {
+    cleaned.published = cleaned.status === 'published';
+  }
+
+  return cleaned;
+}
 
 // Small helper utilities scoped for application needs (articles, media, appointments, newsletter)
 export const auth = {
@@ -39,14 +97,14 @@ export const auth = {
 };
 
 export const storage = {
-  // bucketName is expected to be created in Supabase (e.g., 'media')
-  uploadFile: async (bucketName, path, file, opts = {}) => {
+  bucketName: STORAGE_BUCKET,
+  uploadFile: async (bucketName = STORAGE_BUCKET, path, file, opts = {}) => {
     return supabase.storage.from(bucketName).upload(path, file, opts);
   },
-  getPublicUrl: (bucketName, path) => {
+  getPublicUrl: (bucketName = STORAGE_BUCKET, path) => {
     return supabase.storage.from(bucketName).getPublicUrl(path);
   },
-  remove: async (bucketName, path) => {
+  remove: async (bucketName = STORAGE_BUCKET, path) => {
     return supabase.storage.from(bucketName).remove([path]);
   }
 };
@@ -54,7 +112,7 @@ export const storage = {
 export const db = {
   // Articles table operations - assumes a table named 'articles' exists in Supabase
   articles: {
-    async list({ limit = 20, offset = 0, language = 'it', published_only = true } = {}) {
+    async list({ limit = 20, offset = 0, language = 'en', published_only = true } = {}) {
       let q = supabase.from('articles').select('*').order('created_at', { ascending: false }).range(offset, offset + limit - 1);
       if (published_only) q = q.eq('published', true);
       if (language) q = q.eq('language', language);
@@ -64,10 +122,12 @@ export const db = {
       return supabase.from('articles').select('*').eq('id', id).single();
     },
     async create(payload) {
-      return supabase.from('articles').insert(payload).select();
+      const normalizedPayload = sanitizeArticlePayload(payload);
+      return supabase.from('articles').insert(normalizedPayload).select();
     },
     async update(id, payload) {
-      return supabase.from('articles').update(payload).eq('id', id).select();
+      const normalizedPayload = sanitizeArticlePayload(payload);
+      return supabase.from('articles').update(normalizedPayload).eq('id', id).select();
     },
     async remove(id) {
       return supabase.from('articles').delete().eq('id', id).select();
