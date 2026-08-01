@@ -23,7 +23,7 @@ import { uploadFile, getPublicUrl } from '../hooks/useStorage';
 
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const { i18n } = useTranslation();
   const { loading: articlesLoading, list, create, update, remove } = useArticles();
 
@@ -36,7 +36,7 @@ const AdminDashboardPage = () => {
     excerpt: '',
     content: '',
     category: '',
-    language: i18n.language || 'en',
+    language: i18n.language || 'it',
     tags: '',
     featured_image: '',
     image_url: '',
@@ -51,10 +51,14 @@ const AdminDashboardPage = () => {
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return;
+
     if (!user) {
-      navigate('/admin/login');
+      navigate('/admin/login', { replace: true });
       return;
     }
+
+    let mounted = true;
 
     const initializeDashboard = async () => {
       try {
@@ -62,13 +66,22 @@ const AdminDashboardPage = () => {
         await Promise.all([fetchArticles(), fetchMetrics()]);
       } catch (error) {
         console.error('Error initializing dashboard:', error);
-        handleLogout();
+        if (mounted) {
+          setErrorMessage('Unable to load dashboard data. Please refresh and try again.');
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     initializeDashboard();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, navigate]);
+
+    return () => {
+      mounted = false;
+    };
+  }, [authLoading, user, navigate]);
 
   const fetchArticles = async () => {
     try {
@@ -97,8 +110,10 @@ const AdminDashboardPage = () => {
   const handleLogout = async () => {
     try {
       await signOut();
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
-      navigate('/admin/login');
+      navigate('/admin/login', { replace: true });
     }
   };
 
@@ -147,8 +162,13 @@ const AdminDashboardPage = () => {
     e.preventDefault();
     setErrorMessage('');
 
-    if (!formData.title.trim() || !formData.excerpt.trim() || !formData.content.trim()) {
-      setErrorMessage('Title, excerpt, and content are required.');
+    if (
+      !formData.title.trim() ||
+      !formData.excerpt.trim() ||
+      !formData.content.trim() ||
+      !formData.category.trim()
+    ) {
+      setErrorMessage('Title, excerpt, content, and category are required.');
       return;
     }
 
@@ -157,7 +177,7 @@ const AdminDashboardPage = () => {
       excerpt: formData.excerpt.trim(),
       content: formData.content.trim(),
       category: formData.category.trim(),
-      language: formData.language || 'en',
+      language: formData.language || 'it',
       tags: formData.tags
         .split(',')
         .map((tag) => tag.trim())
@@ -190,7 +210,7 @@ const AdminDashboardPage = () => {
       excerpt: article.excerpt,
       content: article.content,
       category: article.category,
-      language: article.language || i18n.language || 'en',
+      language: article.language || i18n.language || 'it',
       tags: article.tags?.join(', ') || '',
       featured_image: article.featured_image || article.image_url || '',
       image_url: article.image_url || article.featured_image || '',
@@ -228,7 +248,7 @@ const AdminDashboardPage = () => {
       excerpt: '',
       content: '',
       category: '',
-      language: i18n.language || 'en',
+      language: i18n.language || 'it',
       tags: '',
       featured_image: '',
       image_url: '',
@@ -242,7 +262,7 @@ const AdminDashboardPage = () => {
     setDragActive(false);
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -463,7 +483,7 @@ const AdminDashboardPage = () => {
                   <Input
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    placeholder="E.g. Nutrition, Wellness"
+                    placeholder="Es. Nutrizione, Benessere"
                     required
                   />
                 </div>
