@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -39,16 +39,7 @@ const AdminDashboard = () => {
   const { list, create, update, remove } = useArticles();
   const adminEmail = user?.email || 'Admin';
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/admin/login');
-      return;
-    }
-    fetchArticles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, navigate]);
-
-  const fetchArticles = async () => {
+  const fetchArticles = useCallback(async () => {
     try {
       const data = await list({ limit: 100, language: 'it', published_only: false });
       setArticles(data || []);
@@ -57,7 +48,15 @@ const AdminDashboard = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [list]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/admin/login');
+      return;
+    }
+    fetchArticles();
+  }, [user, navigate, fetchArticles]);
 
   const handleLogout = async () => {
     try {
