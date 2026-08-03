@@ -1,22 +1,38 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  LogOut, Plus, Edit, Trash2, Eye, EyeOff, 
-  FileText, Image as ImageIcon, Save, X 
+import {
+  LogOut, Plus, Edit, Trash2, Eye, EyeOff,
+  FileText, Image as ImageIcon, Save, X
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useArticles } from '../hooks/useArticles';
 import { uploadFile, getPublicUrl } from '../hooks/useStorage';
+import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const REQUEST_TIMEOUT_MS = 8000;
+const DEFAULT_BUCKET = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'media';
+
+const runWithTimeout = async (request, fallback = []) => {
+  let timeoutId;
+  const timeoutPromise = new Promise((resolve) => {
+    timeoutId = setTimeout(() => resolve(fallback), REQUEST_TIMEOUT_MS);
+  });
+
+  try {
+    return await Promise.race([request, timeoutPromise]);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
+  const [appointmentsCount, setAppointmentsCount] = useState(0);
+  const [consultationsCount, setConsultationsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
@@ -27,13 +43,9 @@ const AdminDashboard = () => {
     category: '',
     tags: '',
     image_url: '',
-    published: false
+    published: false,
   });
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [dragActive, setDragActive] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showPreview, setShowPreview] = useState(false);
 
   const { user, signOut } = useAuth();
   const { list, create, update, remove } = useArticles();
@@ -41,55 +53,97 @@ const AdminDashboard = () => {
 
   const fetchArticles = useCallback(async () => {
     try {
-      const data = await list({ limit: 100, language: 'it', published_only: false });
+      const data = await runWithTimeout(
+        list({ limit: 100, language: 'it', published_only: false }),
+        []
+      );
       setArticles(data || []);
     } catch (error) {
       console.error('Error fetching articles:', error);
-    } finally {
-      setIsLoading(false);
+      setArticles([]);
     }
   }, [list]);
 
+  const fetchMetrics = useCallback(async () => {
+    try {
+      const [appointmentsRes, consultationsRes] = await Promise.allSettled([
+        runWithTimeout(supabase.from('appointments').select('*'), { data: [], error: null }),
+        runWithTimeout(supabase.from('consultations').select('*'), { data: [], error: null }),
+      ]);
+
+      if (appointmentsRes.status === 'rejected') {
+        throw appointmentsRes.reason;
+      }
+
+      if (consultationsRes.status === 'rejected') {
+        throw consultationsRes.reason;
+      }
+
+      const appts = appointmentsRes.value?.data || [];
+      const consults = consultationsRes.value?.data || [];
+
+      setAppointmentsCount(Array.isArray(appts) ? appts.length : 0);
+      setConsultationsCount(Array.isArray(consults) ? consults.length : 0);
+    } catch (error) {
+      console.warn('Unable to load appointment or consultation metrics:', error);
+      setAppointmentsCount(0);
+      setConsultationsCount(0);
+    }
+  }, []);
+
   useEffect(() => {
+    let active = true;
+
     if (!user) {
       navigate('/admin/login');
-      return;
+      return () => {
+        active = false;
+      };
     }
-    fetchArticles();
-  }, [user, navigate, fetchArticles]);
+
+    const initializeDashboard = async () => {
+      try {
+        setIsLoading(true);
+        await Promise.allSettled([fetchArticles(), fetchMetrics()]);
+      } catch (error) {
+        console.error('Error initializing dashboard:', error);
+      } finally {
+        if (active) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    initializeDashboard();
+
+    return () => {
+      active = false;
+    };
+  }, [user, navigate, fetchArticles, fetchMetrics]);
 
   const handleLogout = async () => {
     try {
       await signOut();
-    } catch (e) {
-      // ignore
+    } catch (error) {
+      console.warn('Logout warning:', error);
     }
     navigate('/admin/login');
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setUploadingImage(true);
-    const formData = new FormData();
-    formData.append('file', file);
 
     try {
-      const response = await axios.post(
-        `${BACKEND_URL}/api/admin/upload-image`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-      
-      setFormData(prev => ({
+      const uploadedFileName = `${Date.now()}-${file.name}`;
+      await uploadFile(DEFAULT_BUCKET, uploadedFileName, file);
+      const publicUrl = getPublicUrl(DEFAULT_BUCKET, uploadedFileName);
+
+      setFormData((prev) => ({
         ...prev,
-        image_url: `${BACKEND_URL}${response.data.image_url}`
+        image_url: publicUrl,
       }));
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -101,45 +155,44 @@ const AdminDashboard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const articleData = {
       ...formData,
-      tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean)
+      tags: String(formData.tags || '')
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      excerpt: formData.excerpt || formData.content.slice(0, 160),
+      category: formData.category || 'general',
+      language: 'it',
+      published: Boolean(formData.published),
     };
 
     try {
       if (editingArticle) {
-        await axios.put(
-          `${BACKEND_URL}/api/admin/articles/${editingArticle.id}`,
-          articleData,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await update(editingArticle.id, articleData);
       } else {
-        await axios.post(
-          `${BACKEND_URL}/api/admin/articles`,
-          articleData,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await create(articleData);
       }
-      
-      fetchArticles();
+
+      await fetchArticles();
       resetForm();
     } catch (error) {
       console.error('Error saving article:', error);
-      alert('Failed to save article');
+      alert(error?.message || 'Failed to save article');
     }
   };
 
   const handleEdit = (article) => {
     setEditingArticle(article);
     setFormData({
-      title: article.title,
-      excerpt: article.excerpt,
-      content: article.content,
-      category: article.category,
-      tags: article.tags.join(', '),
-      image_url: article.image_url || '',
-      published: article.published
+      title: article.title || '',
+      excerpt: article.excerpt || '',
+      content: article.content || '',
+      category: article.category || '',
+      tags: Array.isArray(article.tags) ? article.tags.join(', ') : '',
+      image_url: article.image_url || article.fileUrl || '',
+      published: Boolean(article.published),
     });
     setShowEditor(true);
   };
@@ -148,27 +201,21 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this article?')) return;
 
     try {
-      await axios.delete(`${BACKEND_URL}/api/admin/articles/${articleId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      fetchArticles();
+      await remove(articleId);
+      await fetchArticles();
     } catch (error) {
       console.error('Error deleting article:', error);
-      alert('Failed to delete article');
+      alert(error?.message || 'Failed to delete article');
     }
   };
 
   const togglePublish = async (article) => {
     try {
-      await axios.put(
-        `${BACKEND_URL}/api/admin/articles/${article.id}`,
-        { published: !article.published },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      fetchArticles();
+      await update(article.id, { published: !article.published });
+      await fetchArticles();
     } catch (error) {
       console.error('Error toggling publish:', error);
-      alert('Failed to update article status');
+      alert(error?.message || 'Failed to update article status');
     }
   };
 
@@ -180,7 +227,7 @@ const AdminDashboard = () => {
       category: '',
       tags: '',
       image_url: '',
-      published: false
+      published: false,
     });
     setEditingArticle(null);
     setShowEditor(false);
@@ -199,7 +246,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50" data-testid="admin-dashboard">
-      {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -229,11 +275,24 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <p className="text-sm text-gray-500">Total Articles</p>
+            <p className="text-2xl font-bold text-gray-900">{articles.length}</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <p className="text-sm text-gray-500">Appointments</p>
+            <p className="text-2xl font-bold text-gray-900">{appointmentsCount}</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <p className="text-sm text-gray-500">Consultations</p>
+            <p className="text-2xl font-bold text-gray-900">{consultationsCount}</p>
+          </div>
+        </div>
+
         {!showEditor ? (
           <>
-            {/* Header with Create Button */}
             <div className="flex justify-between items-center mb-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">Articles</h2>
@@ -249,7 +308,6 @@ const AdminDashboard = () => {
               </Button>
             </div>
 
-            {/* Articles List */}
             <div className="grid gap-4">
               {articles.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
@@ -278,9 +336,9 @@ const AdminDashboard = () => {
                             {article.published ? 'Published' : 'Draft'}
                           </span>
                         </div>
-                        <p className="text-gray-600 text-sm mb-2">{article.excerpt}</p>
+                        <p className="text-gray-600 text-sm mb-2">{article.excerpt || article.content}</p>
                         <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <span>Category: {article.category}</span>
+                          <span>Category: {article.category || 'general'}</span>
                           <span>•</span>
                           <span>{new Date(article.created_at).toLocaleDateString()}</span>
                         </div>
@@ -317,7 +375,6 @@ const AdminDashboard = () => {
             </div>
           </>
         ) : (
-          /* Article Editor */
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900">
@@ -366,7 +423,7 @@ const AdminDashboard = () => {
                 <Textarea
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Full article content (supports Markdown)"
+                  placeholder="Full article content"
                   rows={12}
                   required
                 />

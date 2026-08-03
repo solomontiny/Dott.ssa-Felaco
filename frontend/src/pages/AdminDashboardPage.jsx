@@ -8,7 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
-  const { loading: articlesLoading, list, create, remove } = useArticles();
+  const { list, create, remove } = useArticles();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -25,6 +25,7 @@ const AdminDashboard = () => {
       setArticles(data || []);
     } catch (error) {
       console.error("Error fetching articles:", error);
+      setArticles([]);
     }
   }, [list]);
 
@@ -40,31 +41,45 @@ const AdminDashboard = () => {
       setConsultationsCount(consults?.length || 0);
     } catch (error) {
       console.warn("Unable to load appointment or consultation metrics:", error);
+      setAppointmentsCount(0);
+      setConsultationsCount(0);
     }
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!authLoading && !user) {
       navigate("/admin/login");
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
     if (authLoading || !user) {
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
     const initializeDashboard = async () => {
       try {
         setIsInitialLoading(true);
-        await Promise.all([fetchArticles(), fetchMetrics()]);
+        await Promise.allSettled([fetchArticles(), fetchMetrics()]);
       } catch (error) {
         console.error("Error initializing dashboard:", error);
       } finally {
-        setIsInitialLoading(false);
+        if (!cancelled) {
+          setIsInitialLoading(false);
+        }
       }
     };
 
     initializeDashboard();
+
+    return () => {
+      cancelled = true;
+    };
   }, [authLoading, user, navigate, fetchArticles, fetchMetrics]);
 
   const handlePublish = async () => {
@@ -138,7 +153,7 @@ const AdminDashboard = () => {
     navigate("/admin/login");
   };
 
-  if (authLoading || isInitialLoading || articlesLoading) {
+  if (authLoading || isInitialLoading) {
     return (
       <div
         style={{
