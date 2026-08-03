@@ -47,24 +47,7 @@ const AdminDashboardPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPreview, setShowPreview] = useState(false);
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/admin/login');
-      return;
-    }
 
-    const initializeDashboard = async () => {
-      try {
-        setIsLoading(true);
-        await Promise.all([fetchArticles(), fetchMetrics()]);
-      } catch (error) {
-        console.error('Error initializing dashboard:', error);
-        handleLogout();
-      }
-    };
-
-    initializeDashboard();
-    }, [user, navigate, fetchArticles, fetchMetrics, handleLogout]);
 
   const fetchArticles = useCallback(async () => {
     try {
@@ -96,6 +79,28 @@ const AdminDashboardPage = () => {
       navigate('/admin/login');
     }
   }, [signOut, navigate]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/admin/login');
+      return;
+    }
+
+    const initializeDashboard = async () => {
+      try {
+        setIsLoading(true);
+        await Promise.all([fetchArticles(), fetchMetrics()]);
+      } catch (error) {
+        console.error('Error initializing dashboard:', error);
+        handleLogout();
+      }
+    };
+
+    initializeDashboard();
+    }, [user, navigate, fetchArticles, fetchMetrics, handleLogout]);
+
+
+
 
   const handleFileUpload = async (file) => {
     if (!file) return;
