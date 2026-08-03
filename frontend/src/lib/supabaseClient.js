@@ -3,17 +3,26 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = (process.env.REACT_APP_SUPABASE_URL || '').trim();
+const SUPABASE_ANON_KEY = (process.env.REACT_APP_SUPABASE_ANON_KEY || '').trim();
 const STORAGE_BUCKET = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'media';
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+const hasSupabaseConfig = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+const hasLikelyBrokenKey = Boolean(
+  SUPABASE_ANON_KEY &&
+    (
+      SUPABASE_ANON_KEY.length < 40 ||
+      (!SUPABASE_ANON_KEY.startsWith('sb_') && !SUPABASE_ANON_KEY.startsWith('sbp_'))
+    )
+);
+
+if (!hasSupabaseConfig || hasLikelyBrokenKey) {
   // Do not throw here to avoid breaking dev builds; log a warning so developers know to set env vars.
   // The app will continue to use existing backend calls until integration is completed.
   // Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY in frontend/.env for local dev.
   // Example values are in frontend/.env.example
   // eslint-disable-next-line no-console
-  console.warn('Supabase client not fully configured: REACT_APP_SUPABASE_URL or REACT_APP_SUPABASE_ANON_KEY is missing.');
+  console.warn('Supabase client not fully configured: REACT_APP_SUPABASE_URL or REACT_APP_SUPABASE_ANON_KEY is missing or malformed.');
 }
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -22,6 +31,14 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
   },
 });
+
+function ensureSupabaseClient() {
+  if (!hasSupabaseConfig || hasLikelyBrokenKey) {
+    throw new Error('Supabase is not correctly configured. Replace the malformed REACT_APP_SUPABASE_ANON_KEY in frontend/.env with the project anon key from the Supabase dashboard.');
+  }
+
+  return supabase;
+}
 
 function toSlug(value = '') {
   return String(value)
@@ -83,16 +100,20 @@ function sanitizeArticlePayload(payload = {}) {
 // Small helper utilities scoped for application needs (articles, media, appointments, newsletter)
 export const auth = {
   async signInWithEmail(email, password) {
-    return supabase.auth.signInWithPassword({ email, password });
+    const client = ensureSupabaseClient();
+    return client.auth.signInWithPassword({ email, password });
   },
   async signOut() {
-    return supabase.auth.signOut();
+    const client = ensureSupabaseClient();
+    return client.auth.signOut();
   },
   getUser() {
-    return supabase.auth.getUser();
+    const client = ensureSupabaseClient();
+    return client.auth.getUser();
   },
   onAuthStateChange(cb) {
-    return supabase.auth.onAuthStateChange(cb);
+    const client = ensureSupabaseClient();
+    return client.auth.onAuthStateChange(cb);
   }
 };
 

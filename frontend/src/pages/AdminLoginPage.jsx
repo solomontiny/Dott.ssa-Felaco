@@ -15,10 +15,10 @@ const AdminLoginPage = () => {
   const { user, loading, signIn } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (!loading && user) {
       navigate('/admin/dashboard');
     }
-  }, [user, navigate]);
+  }, [loading, user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
