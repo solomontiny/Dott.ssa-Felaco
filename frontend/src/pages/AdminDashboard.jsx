@@ -47,24 +47,24 @@ const AdminDashboard = () => {
   });
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const { user, signOut } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const { list, create, update, remove } = useArticles();
   const adminEmail = user?.email || 'Admin';
 
-  const fetchArticles = useCallback(async () => {
+  const fetchArticles = useCallback(async (isActive = () => true) => {
     try {
       const data = await runWithTimeout(
         list({ limit: 100, language: 'it', published_only: false }),
         []
       );
-      setArticles(data || []);
+      if (isActive()) setArticles(data || []);
     } catch (error) {
       console.error('Error fetching articles:', error);
-      setArticles([]);
+      if (isActive()) setArticles([]);
     }
   }, [list]);
 
-  const fetchMetrics = useCallback(async () => {
+  const fetchMetrics = useCallback(async (isActive = () => true) => {
     try {
       const [appointmentsRes, consultationsRes] = await Promise.allSettled([
         runWithTimeout(supabase.from('appointments').select('*'), { data: [], error: null }),
@@ -82,44 +82,45 @@ const AdminDashboard = () => {
       const appts = appointmentsRes.value?.data || [];
       const consults = consultationsRes.value?.data || [];
 
-      setAppointmentsCount(Array.isArray(appts) ? appts.length : 0);
-      setConsultationsCount(Array.isArray(consults) ? consults.length : 0);
+      if (isActive()) {
+        setAppointmentsCount(Array.isArray(appts) ? appts.length : 0);
+        setConsultationsCount(Array.isArray(consults) ? consults.length : 0);
+      }
     } catch (error) {
       console.warn('Unable to load appointment or consultation metrics:', error);
-      setAppointmentsCount(0);
-      setConsultationsCount(0);
+      if (isActive()) {
+        setAppointmentsCount(0);
+        setConsultationsCount(0);
+      }
     }
   }, []);
 
   useEffect(() => {
     let active = true;
 
-    if (!user) {
-      navigate('/admin/login');
+    if (authLoading) {
       return () => {
         active = false;
       };
     }
 
-    const initializeDashboard = async () => {
-      try {
-        setIsLoading(true);
-        await Promise.allSettled([fetchArticles(), fetchMetrics()]);
-      } catch (error) {
-        console.error('Error initializing dashboard:', error);
-      } finally {
-        if (active) {
-          setIsLoading(false);
-        }
-      }
-    };
+    if (!user) {
+      navigate('/admin/login', { replace: true });
+      return () => {
+        active = false;
+      };
+    }
 
-    initializeDashboard();
+    // Authentication gates the page; metrics do not. Render immediately and
+    // populate each card when its independent Supabase request completes.
+    setIsLoading(false);
+    void fetchArticles(() => active);
+    void fetchMetrics(() => active);
 
     return () => {
       active = false;
     };
-  }, [user, navigate, fetchArticles, fetchMetrics]);
+  }, [authLoading, user, navigate, fetchArticles, fetchMetrics]);
 
   const handleLogout = async () => {
     try {
@@ -233,7 +234,7 @@ const AdminDashboard = () => {
     setShowEditor(false);
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -243,6 +244,8 @@ const AdminDashboard = () => {
       </div>
     );
   }
+
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gray-50" data-testid="admin-dashboard">

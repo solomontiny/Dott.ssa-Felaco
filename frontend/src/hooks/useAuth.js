@@ -1,25 +1,41 @@
-import { useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { auth } from '../lib/supabaseClient';
 
-// Lightweight auth hook that wraps Supabase auth. Does not replace existing login UI.
-export function useAuth() {
+const AuthContext = createContext(null);
+
+// Keep one session-restoration request and one auth listener for the whole app.
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-    let unsubscribe = null;
+
+    const { data: listener } = auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
     async function init() {
       try {
-        const { data, error } = await auth.getUser();
+        // getSession restores the locally persisted session without making a
+        // network user-validation request on every route mount.
+        const { data, error } = await auth.getSession();
         if (!mounted) return;
 
         if (error) {
           console.warn('Supabase session initialization warning:', error.message);
         }
 
-        setUser(data?.user ?? null);
+        setUser(data?.session?.user ?? null);
       } catch (error) {
         if (mounted) {
           console.warn('Unable to initialize Supabase auth:', error);
@@ -34,21 +50,13 @@ export function useAuth() {
 
     init();
 
-    const { data: listener } = auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return;
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    unsubscribe = listener?.subscription;
-
     return () => {
       mounted = false;
-      unsubscribe?.unsubscribe?.();
+      listener?.subscription?.unsubscribe?.();
     };
   }, []);
 
-  const signIn = async (email, password) => {
+  const signIn = useCallback(async (email, password) => {
     setLoading(true);
 
     try {
@@ -58,15 +66,16 @@ export function useAuth() {
         throw res.error;
       }
 
-      const { data } = await auth.getUser();
-      setUser(data?.user ?? null);
+      // signInWithPassword already returns the authenticated user. Avoid a
+      // second getUser() request while the auth event is being delivered.
+      setUser(res.data?.user ?? res.data?.session?.user ?? null);
       return res;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -76,7 +85,22 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  return { user, loading, signIn, signOut };
+  const value = useMemo(
+    () => ({ user, loading, signIn, signOut }),
+    [user, loading, signIn, signOut]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+
+  return context;
 }

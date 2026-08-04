@@ -111,6 +111,10 @@ export const auth = {
     const client = ensureSupabaseClient();
     return client.auth.getUser();
   },
+  getSession() {
+    const client = ensureSupabaseClient();
+    return client.auth.getSession();
+  },
   onAuthStateChange(cb) {
     const client = ensureSupabaseClient();
     return client.auth.onAuthStateChange(cb);

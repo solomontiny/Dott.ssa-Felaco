@@ -29,8 +29,6 @@ const AdminLoginPage = () => {
       const res = await signIn(email, password);
       if (res.error) {
         setError(res.error.message || 'Autenticazione fallita');
-      } else {
-        navigate('/admin/dashboard');
       }
     } catch (err) {
       const msg = err?.message || err?.error?.message || 'Login failed. Please check your credentials and try again.';

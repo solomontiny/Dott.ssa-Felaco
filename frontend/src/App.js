@@ -19,6 +19,7 @@ import WhatsAppWidget from "./components/WhatsAppWidget";
 import BlogSection from "./components/BlogSection";
 import AdminLogin from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import { AuthProvider } from "./hooks/useAuth";
 
 function MainWebsite() {
   return (
@@ -45,12 +46,14 @@ function MainWebsite() {
 function App() {
   return (
     <HashRouter>
-      <Routes>
-        <Route path="/" element={<MainWebsite />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<MainWebsite />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
     </HashRouter>
   );
 }
