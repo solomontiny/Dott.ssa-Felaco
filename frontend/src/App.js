@@ -19,6 +19,8 @@ import WhatsAppWidget from "./components/WhatsAppWidget";
 import BlogSection from "./components/BlogSection";
 import AdminLogin from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { AuthProvider } from "./hooks/useAuth";
 
 function MainWebsite() {
@@ -44,15 +46,19 @@ function MainWebsite() {
 }
 
 function App() {
+  const isPasswordRecovery = new URLSearchParams(window.location.search).has("reset-password");
+
   return (
     <HashRouter>
       <AuthProvider>
-        <Routes>
+        {isPasswordRecovery ? <ResetPasswordPage /> : <Routes>
           <Route path="/" element={<MainWebsite />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/admin/reset-password" element={<ResetPasswordPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        </Routes>}
       </AuthProvider>
     </HashRouter>
   );

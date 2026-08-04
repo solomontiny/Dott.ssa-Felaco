@@ -6,6 +6,29 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = (process.env.REACT_APP_SUPABASE_URL || '').trim();
 const SUPABASE_ANON_KEY = (process.env.REACT_APP_SUPABASE_ANON_KEY || '').trim();
 const STORAGE_BUCKET = process.env.REACT_APP_SUPABASE_STORAGE_BUCKET || 'media';
+const AUTH_STORAGE_KEY = 'dott-felaco-auth-token';
+const REMEMBER_ME_KEY = 'dott-felaco-remember-me';
+
+const shouldRememberSession = () => window.localStorage.getItem(REMEMBER_ME_KEY) === 'true';
+
+// Supabase uses this adapter for its auth token. The selected backing store is
+// determined before sign-in, so an unchecked "Remember me" survives refreshes
+// but is cleared automatically when the browser session ends.
+const authStorage = {
+  getItem: (key) => (shouldRememberSession()
+    ? window.localStorage.getItem(key)
+    : window.sessionStorage.getItem(key)),
+  setItem: (key, value) => {
+    const persistentStore = shouldRememberSession() ? window.localStorage : window.sessionStorage;
+    const otherStore = shouldRememberSession() ? window.sessionStorage : window.localStorage;
+    otherStore.removeItem(key);
+    persistentStore.setItem(key, value);
+  },
+  removeItem: (key) => {
+    window.localStorage.removeItem(key);
+    window.sessionStorage.removeItem(key);
+  },
+};
 
 const hasSupabaseConfig = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 const hasLikelyBrokenKey = Boolean(
@@ -29,6 +52,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
+    storage: authStorage,
+    storageKey: AUTH_STORAGE_KEY,
   },
 });
 
@@ -103,6 +128,16 @@ function sanitizeArticlePayload(payload = {}, { isNew = false } = {}) {
 
 // Small helper utilities scoped for application needs (articles, media, appointments, newsletter)
 export const auth = {
+  setRememberMe(remember) {
+    if (remember) {
+      window.localStorage.setItem(REMEMBER_ME_KEY, 'true');
+    } else {
+      window.localStorage.removeItem(REMEMBER_ME_KEY);
+      // Do not allow a previously remembered token to authenticate a new
+      // session after the user explicitly chooses a browser-session login.
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  },
   async signInWithEmail(email, password) {
     const client = ensureSupabaseClient();
     return client.auth.signInWithPassword({ email, password });
@@ -114,6 +149,14 @@ export const auth = {
   getUser() {
     const client = ensureSupabaseClient();
     return client.auth.getUser();
+  },
+  async resetPasswordForEmail(email, options) {
+    const client = ensureSupabaseClient();
+    return client.auth.resetPasswordForEmail(email, options);
+  },
+  async updatePassword(password) {
+    const client = ensureSupabaseClient();
+    return client.auth.updateUser({ password });
   },
   getSession() {
     const client = ensureSupabaseClient();

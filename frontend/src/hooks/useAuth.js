@@ -56,10 +56,11 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const signIn = useCallback(async (email, password) => {
+  const signIn = useCallback(async (email, password, rememberMe = false) => {
     setLoading(true);
 
     try {
+      auth.setRememberMe(rememberMe);
       const res = await auth.signInWithEmail(email, password);
 
       if (res.error) {

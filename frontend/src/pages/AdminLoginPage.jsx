@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, AlertCircle, KeyRound } from 'lucide-react';
+import { Mail, Lock, AlertCircle, KeyRound, Eye, EyeOff, LoaderCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useAuth } from '../hooks/useAuth';
@@ -9,6 +9,8 @@ const AdminLoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,7 +28,7 @@ const AdminLoginPage = () => {
     setError('');
 
     try {
-      const res = await signIn(email, password);
+      const res = await signIn(email.trim(), password, rememberMe);
       if (res.error) {
         setError(res.error.message || 'Autenticazione fallita');
       }
@@ -76,13 +78,41 @@ const AdminLoginPage = () => {
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
                   data-testid="admin-password-input"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Inserisci la tua password"
                   required
-                  className="pl-10 w-full"
+                  className="pl-10 pr-11 w-full"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-gray-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label={showPassword ? 'Nascondi password' : 'Mostra password'}
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600">
+                  <input
+                    data-testid="remember-me-checkbox"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(event) => setRememberMe(event.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  Ricordami
+                </label>
+                <button
+                  type="button"
+                  onClick={() => navigate('/admin/forgot-password')}
+                  className="text-left text-sm font-medium text-blue-600 hover:text-blue-700 focus:outline-none focus:underline"
+                >
+                  Password dimenticata?
+                </button>
               </div>
             </div>
 
@@ -102,7 +132,9 @@ const AdminLoginPage = () => {
               disabled={isLoading || loading}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-full font-medium text-lg"
             >
-              {isLoading || loading ? 'Accesso in corso...' : 'Accedi'}
+              {isLoading || loading ? (
+                <span className="flex items-center justify-center gap-2"><LoaderCircle className="h-5 w-5 animate-spin" /> Accesso in corso...</span>
+              ) : 'Accedi'}
             </Button>
           </form>
 
