@@ -50,7 +50,7 @@ function toSlug(value = '') {
     .replace(/^-|-$/g, '');
 }
 
-function sanitizeArticlePayload(payload = {}) {
+function sanitizeArticlePayload(payload = {}, { isNew = false } = {}) {
   const cleaned = { ...payload };
 
   Object.keys(cleaned).forEach((key) => {
@@ -78,10 +78,6 @@ function sanitizeArticlePayload(payload = {}) {
     cleaned.slug = `${toSlug(cleaned.title)}-${Date.now()}`;
   }
 
-  if (!cleaned.status) {
-    cleaned.status = cleaned.published ? 'published' : 'draft';
-  }
-
   if (cleaned.featured_image === undefined && cleaned.image_url) {
     cleaned.featured_image = cleaned.image_url;
   }
@@ -90,8 +86,16 @@ function sanitizeArticlePayload(payload = {}) {
     cleaned.image_url = cleaned.featured_image;
   }
 
-  if (cleaned.published === undefined) {
+  // Treat status and published as one publication state.  Older rows may have
+  // either field set, but every write from the app keeps the two in sync.
+  if (typeof cleaned.status === 'string') {
+    cleaned.status = cleaned.status.toLowerCase();
     cleaned.published = cleaned.status === 'published';
+  } else if (typeof cleaned.published === 'boolean') {
+    cleaned.status = cleaned.published ? 'published' : 'draft';
+  } else if (isNew) {
+    cleaned.status = 'draft';
+    cleaned.published = false;
   }
 
   return cleaned;
@@ -137,17 +141,24 @@ export const storage = {
 export const db = {
   // Articles table operations - assumes a table named 'articles' exists in Supabase
   articles: {
-    async list({ limit = 20, offset = 0, language = 'en', published_only = true } = {}) {
-      let q = supabase.from('articles').select('*').order('created_at', { ascending: false }).range(offset, offset + limit - 1);
-      if (published_only) q = q.eq('published', true);
+    async list({ limit = 20, offset = 0, language, published_only = true } = {}) {
+      let q = supabase
+        .from('articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      // A published article can be represented by either legacy field. This
+      // keeps existing published content visible while migrations are applied.
+      if (published_only) q = q.or('published.eq.true,status.eq.published').is('deleted_at', null);
       if (language) q = q.eq('language', language);
+      if (Number.isFinite(limit) && limit > 0) q = q.range(offset, offset + limit - 1);
       return q;
     },
     async get(id) {
       return supabase.from('articles').select('*').eq('id', id).single();
     },
     async create(payload) {
-      const normalizedPayload = sanitizeArticlePayload(payload);
+      const normalizedPayload = sanitizeArticlePayload(payload, { isNew: true });
       return supabase.from('articles').insert(normalizedPayload).select();
     },
     async update(id, payload) {

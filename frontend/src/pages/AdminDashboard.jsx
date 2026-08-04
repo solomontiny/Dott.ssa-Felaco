@@ -167,6 +167,7 @@ const AdminDashboard = () => {
       category: formData.category || 'general',
       language: 'it',
       published: Boolean(formData.published),
+      status: formData.published ? 'published' : 'draft',
     };
 
     try {
@@ -212,7 +213,11 @@ const AdminDashboard = () => {
 
   const togglePublish = async (article) => {
     try {
-      await update(article.id, { published: !article.published });
+      const isPublished = !(article.status === 'published' || article.published === true);
+      await update(article.id, {
+        published: isPublished,
+        status: isPublished ? 'published' : 'draft',
+      });
       await fetchArticles();
     } catch (error) {
       console.error('Error toggling publish:', error);

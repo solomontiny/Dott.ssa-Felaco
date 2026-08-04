@@ -1,39 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import { useArticles } from '../hooks/useArticles';
-
-const STATIC_POSTS = [
-  {
-    id: 'static-1',
-    image: 'https://images.unsplash.com/photo-1566895733044-d2bdda8b6234?w=400&h=300&fit=crop',
-    created_at: '2026-01-13T00:00:00',
-    title: "Collaborazione per Prevenire e Ridurre l'Obesita Infantile: Un Impegno Collettivo",
-    excerpt: "L'obesita infantile e una problematica crescente che puo causare complicazioni di salute a lungo termine. Per prevenirla e ridurla, e essenziale una collaborazione tra famiglie, scuole e professionisti della salute.",
-  },
-  {
-    id: 'static-2',
-    image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=400&h=300&fit=crop',
-    created_at: '2026-01-12T00:00:00',
-    title: "Obesita Infantile: Crescita e Influenza della Famiglia",
-    excerpt: "L'obesita infantile e un problema di salute globale in forte aumento. Secondo i dati ISTAT 2025, il sovrappeso tra i giovani e in crescita, con abitudini alimentari peggiorate.",
-  },
-  {
-    id: 'static-3',
-    image: 'https://images.unsplash.com/photo-1550572017-4fcdbb59cc32?w=400&h=300&fit=crop',
-    created_at: '2023-11-07T00:00:00',
-    title: 'Perche non dobbiamo usare eccessivamente gli integratori?',
-    excerpt: "Fin dai tempi dei nostri nonni, integratori e medicine di vario tipo erano da evitare. Ad oggi le statistiche indicano un aumento spropositato dell'uso di questi prodotti.",
-  },
-  {
-    id: 'static-4',
-    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop',
-    created_at: '2023-11-05T00:00:00',
-    title: 'BRODO DI OSSA, un vero super food',
-    excerpt: "Il brodo di ossa e un piatto funzionale al benessere globale dell'organismo. Introdotto in modo costante nella propria routine alimentare, puo aiutare a lenire infiammazioni.",
-  },
-];
+import { supabase } from '../lib/supabaseClient';
 
 const categories = [
   'Composizione corporea',
@@ -44,23 +13,36 @@ const categories = [
 ];
 
 const BlogSection = () => {
-  const { i18n } = useTranslation();
-  const [posts, setPosts] = useState(STATIC_POSTS);
+  const [posts, setPosts] = useState([]);
 
   const { list } = useArticles();
 
   useEffect(() => {
+    let active = true;
+
     const fetchArticles = async () => {
       try {
-        const language = i18n.language || 'it';
-        const data = await list({ limit: 4, language, published_only: true });
-        if (data && data.length > 0) setPosts(data);
+        // The public blog intentionally has no language or page-size filter:
+        // every published article must be visible, newest first.
+        const data = await list({ limit: null, published_only: true });
+        if (active) setPosts(data || []);
       } catch {
-        // Keep static posts on error
+        if (active) setPosts([]);
       }
     };
-    fetchArticles();
-  }, [i18n.language, list]);
+    void fetchArticles();
+
+    // Updates from the admin dashboard refresh an already-open public page.
+    const channel = supabase
+      .channel('public-published-articles')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'articles' }, fetchArticles)
+      .subscribe();
+
+    return () => {
+      active = false;
+      supabase.removeChannel(channel);
+    };
+  }, [list]);
 
   const formatDate = (dateStr) => {
     try {

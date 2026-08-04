@@ -70,13 +70,15 @@ const handlers = {
   // Public articles listing
   async get_articles({ searchParams }) {
     const published_only = searchParams.get('published_only') !== 'false';
-    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const requestedLimit = searchParams.get('limit');
+    const limit = requestedLimit ? parseInt(requestedLimit, 10) : null;
     const offset = parseInt(searchParams.get('offset') || '0', 10);
-    const language = searchParams.get('language') || 'en';
+    const language = searchParams.get('language');
 
-    let query = supaClient.from('articles').select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(offset, offset + limit - 1);
-    if (published_only) query = query.eq('published', true);
+    let query = supaClient.from('articles').select('*', { count: 'exact' }).order('created_at', { ascending: false });
+    if (published_only) query = query.or('published.eq.true,status.eq.published').is('deleted_at', null);
     if (language) query = query.eq('language', language);
+    if (Number.isFinite(limit) && limit > 0) query = query.range(offset, offset + limit - 1);
 
     const { data, error, count } = await query;
     if (error) return Promise.reject({ response: { status: 500, data: { detail: error.message } } });
@@ -96,7 +98,14 @@ const handlers = {
   async post_admin_articles({ data }) {
     await requireAuth();
     // Ensure created_at / author fields are provided
-    const payload = { ...data, created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+    const isPublished = data.status === 'published' || data.published === true;
+    const payload = {
+      ...data,
+      published: isPublished,
+      status: isPublished ? 'published' : 'draft',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
     const { data: inserted, error } = await supaClient.from('articles').insert(payload).select().single();
     if (error) return Promise.reject({ response: { status: 500, data: { detail: error.message } } });
     return makeResponse(inserted, 200);
@@ -104,7 +113,15 @@ const handlers = {
 
   async put_admin_articles_id({ id, data }) {
     await requireAuth();
-    const payload = { ...data, updated_at: new Date().toISOString() };
+    const hasPublicationChange = typeof data.published === 'boolean' || typeof data.status === 'string';
+    const isPublished = data.status === 'published' || data.published === true;
+    const payload = {
+      ...data,
+      ...(hasPublicationChange
+        ? { published: isPublished, status: isPublished ? 'published' : 'draft' }
+        : {}),
+      updated_at: new Date().toISOString(),
+    };
     const { data: updated, error } = await supaClient.from('articles').update(payload).eq('id', id).select().single();
     if (error) return Promise.reject({ response: { status: 500, data: { detail: error.message } } });
     return makeResponse({ article: updated }, 200);
