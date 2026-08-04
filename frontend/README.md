@@ -68,3 +68,20 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Supabase and Cloudflare deployment
+
+React embeds `REACT_APP_*` values while it builds the static bundle. Copy
+`.env.example` to `.env` for local development and supply these variables:
+
+- `REACT_APP_SUPABASE_URL`
+- `REACT_APP_SUPABASE_ANON_KEY`
+
+For Cloudflare, configure the same variables in the environment that runs the
+build (for example, the Cloudflare build environment or the CI job that invokes
+Wrangler). Do not place their values in `wrangler.toml` or commit `.env`.
+
+Use `npm run deploy:cloudflare` for Wrangler deployments. It first runs the
+validated production build and only then uploads `build/`. The validation fails
+before deployment when either required variable is missing, preventing an empty
+Supabase configuration from reaching production.
