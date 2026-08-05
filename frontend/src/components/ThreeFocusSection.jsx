@@ -2,26 +2,29 @@ import React from 'react';
 import { Brain, BookOpen, Activity } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const ThreeFocusSection = () => {
+const ThreeFocusSection = ({ content }) => {
   const { t } = useTranslation();
   
+  const sectionTitle = content?.sectionTitle || t('focus.sectionTitle');
+  const mainTitle = content?.mainTitle || t('focus.mainTitle');
+
   const focuses = [
     {
-      number: t('focus.one.number'),
-      title: t('focus.one.title'),
-      description: t('focus.one.description'),
+      number: content?.one?.number || t('focus.one.number'),
+      title: content?.one?.title || t('focus.one.title'),
+      description: content?.one?.description || t('focus.one.description'),
       icon: Brain
     },
     {
-      number: t('focus.two.number'),
-      title: t('focus.two.title'),
-      description: t('focus.two.description'),
+      number: content?.two?.number || t('focus.two.number'),
+      title: content?.two?.title || t('focus.two.title'),
+      description: content?.two?.description || t('focus.two.description'),
       icon: BookOpen
     },
     {
-      number: t('focus.three.number'),
-      title: t('focus.three.title'),
-      description: t('focus.three.description'),
+      number: content?.three?.number || t('focus.three.number'),
+      title: content?.three?.title || t('focus.three.title'),
+      description: content?.three?.description || t('focus.three.description'),
       icon: Activity
     }
   ];
@@ -31,10 +34,10 @@ const ThreeFocusSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
-            {t('focus.sectionTitle')}
+            {sectionTitle}
           </p>
           <h2 className="text-4xl md:text-5xl font-serif text-gray-900">
-            {t('focus.mainTitle')}
+            {mainTitle}
           </h2>
         </div>
 

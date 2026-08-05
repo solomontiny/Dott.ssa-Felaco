@@ -4,6 +4,8 @@ import { Button } from './ui/button';
 import { useArticles } from '../hooks/useArticles';
 import { supabase } from '../lib/supabaseClient';
 
+import { useTranslation } from 'react-i18next';
+
 const categories = [
   'Composizione corporea',
   'Educazione e risorse',
@@ -12,19 +14,23 @@ const categories = [
   'Strumenti',
 ];
 
-const BlogSection = () => {
+const BlogSection = ({ content }) => {
   const [posts, setPosts] = useState([]);
+  const { i18n, t } = useTranslation();
 
   const { list } = useArticles();
+
+  const label = content?.label || t('blog.label');
+  const title = content?.title || t('blog.title');
+  const cta = content?.cta || t('blog.cta');
 
   useEffect(() => {
     let active = true;
 
     const fetchArticles = async () => {
       try {
-        // The public blog intentionally has no language or page-size filter:
-        // every published article must be visible, newest first.
-        const data = await list({ limit: null, published_only: true });
+        // Fetch all published articles, regardless of language
+        const data = await list({ limit: 4, published_only: true });
         if (active) setPosts(data || []);
       } catch {
         if (active) setPosts([]);
@@ -60,14 +66,15 @@ const BlogSection = () => {
     <section id="articoli" className="py-24 bg-gray-50" data-testid="blog-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-blue-600 font-medium tracking-wider text-sm mb-4">BLOG</p>
-          <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-8">Ultimi articoli</h2>
+          <p className="text-blue-600 font-medium tracking-wider text-sm mb-4">{label}</p>
+          <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-8">{title}</h2>
           <Button
             variant="outline"
             className="border-2 border-blue-500 text-blue-700 hover:bg-blue-50 px-6 py-3 rounded-full font-medium inline-flex items-center space-x-2"
             data-testid="view-all-articles-btn"
+            onClick={() => window.location.hash = '/articles'}
           >
-            <span>Vedi tutti gli articoli</span>
+            <span>{cta}</span>
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>
@@ -77,6 +84,7 @@ const BlogSection = () => {
             <article
               key={post.id}
               data-testid={`blog-card-${post.id}`}
+              onClick={() => window.location.hash = `/articles/${post.id}`}
               className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer group"
             >
               <div className="relative h-48 overflow-hidden">

@@ -190,9 +190,13 @@ export const db = {
         .select('*')
         .order('created_at', { ascending: false });
 
-      // A published article can be represented by either legacy field. This
-      // keeps existing published content visible while migrations are applied.
-      if (published_only) q = q.or('published.eq.true,status.eq.published').is('deleted_at', null);
+      // Apply consistent filtering
+      if (published_only) {
+        q = q.or('published.eq.true,status.eq.published');
+      }
+      
+      q = q.is('deleted_at', null);
+      
       if (language) q = q.eq('language', language);
       if (Number.isFinite(limit) && limit > 0) q = q.range(offset, offset + limit - 1);
       return q;

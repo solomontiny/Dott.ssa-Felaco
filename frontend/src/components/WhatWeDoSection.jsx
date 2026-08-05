@@ -17,79 +17,85 @@ import {
   Leaf
 } from 'lucide-react';
 
-const WhatWeDoSection = () => {
+const WhatWeDoSection = ({ content }) => {
   const { t } = useTranslation();
   
+  const label = content?.label || t('whatWeDo.label');
+  const title = content?.title || t('whatWeDo.title');
+  const subtitle = content?.subtitle || t('whatWeDo.subtitle');
+  const cta = content?.cta || t('whatWeDo.cta');
+  const button = content?.button || t('whatWeDo.button');
+
   const services = [
     {
       icon: Scale,
-      title: t('services.overweight.title'),
-      description: t('services.overweight.description')
+      title: content?.services?.overweight?.title || t('services.overweight.title'),
+      description: content?.services?.overweight?.description || t('services.overweight.description')
     },
     {
       icon: Heart,
-      title: t('services.eatingDisorders.title'),
-      description: t('services.eatingDisorders.description')
+      title: content?.services?.eatingDisorders?.title || t('services.eatingDisorders.title'),
+      description: content?.services?.eatingDisorders?.description || t('services.eatingDisorders.description')
     },
     {
       icon: Droplets,
-      title: t('services.diabetes.title'),
-      description: t('services.diabetes.description')
+      title: content?.services?.diabetes?.title || t('services.diabetes.title'),
+      description: content?.services?.diabetes?.description || t('services.diabetes.description')
     },
     {
       icon: Activity,
-      title: t('services.metabolic.title'),
-      description: t('services.metabolic.description')
+      title: content?.services?.metabolic?.title || t('services.metabolic.title'),
+      description: content?.services?.metabolic?.description || t('services.metabolic.description')
     },
     {
       icon: HeartPulse,
-      title: t('services.hypertension.title'),
-      description: t('services.hypertension.description')
+      title: content?.services?.hypertension?.title || t('services.hypertension.title'),
+      description: content?.services?.hypertension?.description || t('services.hypertension.description')
     },
     {
       icon: Shield,
-      title: t('services.renal.title'),
-      description: t('services.renal.description')
+      title: content?.services?.renal?.title || t('services.renal.title'),
+      description: content?.services?.renal?.description || t('services.renal.description')
     },
     {
       icon: Baby,
-      title: t('services.childhoodObesity.title'),
-      description: t('services.childhoodObesity.description')
+      title: content?.services?.childhoodObesity?.title || t('services.childhoodObesity.title'),
+      description: content?.services?.childhoodObesity?.description || t('services.childhoodObesity.description')
     },
     {
       icon: Sparkles,
-      title: t('services.autoimmune.title'),
-      description: t('services.autoimmune.description')
+      title: content?.services?.autoimmune?.title || t('services.autoimmune.title'),
+      description: content?.services?.autoimmune?.description || t('services.autoimmune.description')
     },
     {
       icon: AlertCircle,
-      title: t('services.intolerances.title'),
-      description: t('services.intolerances.description')
+      title: content?.services?.intolerances?.title || t('services.intolerances.title'),
+      description: content?.services?.intolerances?.description || t('services.intolerances.description')
     },
     {
       icon: Users,
-      title: t('services.pregnancy.title'),
-      description: t('services.pregnancy.description')
+      title: content?.services?.pregnancy?.title || t('services.pregnancy.title'),
+      description: content?.services?.pregnancy?.description || t('services.pregnancy.description')
     },
     {
       icon: Moon,
-      title: t('services.menopause.title'),
-      description: t('services.menopause.description')
+      title: content?.services?.menopause?.title || t('services.menopause.title'),
+      description: content?.services?.menopause?.description || t('services.menopause.description')
     },
     {
       icon: Stethoscope,
-      title: t('services.oncological.title'),
-      description: t('services.oncological.description')
+      title: content?.services?.oncological?.title || t('services.oncological.title'),
+      description: content?.services?.oncological?.description || t('services.oncological.description')
     },
     {
       icon: Trophy,
-      title: t('services.sports.title'),
-      description: t('services.sports.description')
+      title: content?.services?.sports?.title || t('services.sports.title'),
+      description: content?.services?.sports?.description || t('services.sports.description')
     },
     {
       icon: Leaf,
-      title: t('services.vegetarian.title'),
-      description: t('services.vegetarian.description')
+      title: content?.services?.vegetarian?.title || t('services.vegetarian.title'),
+      description: content?.services?.vegetarian?.description || t('services.vegetarian.description')
     }
   ];
 
@@ -98,13 +104,13 @@ const WhatWeDoSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
-            {t('whatWeDo.label')}
+            {label}
           </p>
           <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-4">
-            {t('whatWeDo.title')}
+            {title}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t('whatWeDo.subtitle')}
+            {subtitle}
           </p>
         </div>
 
@@ -132,7 +138,7 @@ const WhatWeDoSection = () => {
 
         <div className="mt-12 text-center">
           <p className="text-gray-600 mb-6">
-            {t('whatWeDo.cta')}
+            {cta}
           </p>
           <button
             onClick={() => {
@@ -141,7 +147,7 @@ const WhatWeDoSection = () => {
             }}
             className="bg-blue-500 hover:bg-teal-600 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 hover:shadow-lg"
           >
-            {t('whatWeDo.button')}
+            {button}
           </button>
         </div>
       </div>

@@ -15,10 +15,17 @@ export function useArticles() {
     };
   }, []);
 
-  const list = useCallback(async ({ limit = 20, offset = 0, language = 'en', published_only = true } = {}) => {
+  const list = useCallback(async ({ limit = 20, offset = 0, language, published_only = true } = {}) => {
     if (mountedRef.current) setLoading(true);
 
     try {
+      // Consistent query construction used in both client-side list and db.articles.list
+      let q = db.articles.list({ limit, offset, language, published_only });
+      
+      // Since list helper currently just calls db.articles.list which returns the query object, 
+      // but db.articles.list is async, I need to await the execution of the query here.
+      // Wait, looking at src/lib/supabaseClient.js, db.articles.list() returns the query object, not the data.
+      // So I need to execute it here.
       const res = await db.articles.list({ limit, offset, language, published_only });
       if (res.error) throw res.error;
       return res.data;

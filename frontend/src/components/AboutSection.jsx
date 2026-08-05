@@ -1,9 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const AboutSection = () => {
+const AboutSection = ({ content }) => {
   const { t } = useTranslation();
-  
+
+  const label = content?.label || t('about.label');
+  const title = content?.title || t('about.title');
+  const titleHighlight = content?.titleHighlight || t('about.titleHighlight');
+  const intro = content?.intro || t('about.intro');
+  const text1 = content?.text1 || t('about.text1');
+  const text2 = content?.text2 || t('about.text2');
+  const text3 = content?.text3 || t('about.text3');
+  const text4 = content?.text4 || t('about.text4');
+  const quote1 = content?.quote1 || t('about.quote1');
+  const quote2 = content?.quote2 || t('about.quote2');
+  const imageUrl = content?.image_url || "https://customer-assets.emergentagent.com/job_80398c3c-4f8a-434b-b923-133758dd4592/artifacts/fc7j2qlu_WhatsApp_Image_2026-02-08_at_6.00.05_PM-removebg-preview.png";
+
   return (
     <section id="about" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -12,7 +24,7 @@ const AboutSection = () => {
           <div className="relative">
             <div className="relative bg-gradient-to-br from-blue-50 to-white rounded-2xl p-8 shadow-xl border-2 border-blue-100">
               <img
-                src="https://customer-assets.emergentagent.com/job_80398c3c-4f8a-434b-b923-133758dd4592/artifacts/fc7j2qlu_WhatsApp_Image_2026-02-08_at_6.00.05_PM-removebg-preview.png"
+                src={imageUrl}
                 alt="Dott.ssa Felaco Giuseppina - Nutritionist"
                 className="w-full h-auto object-contain"
                 style={{ 
@@ -37,35 +49,35 @@ const AboutSection = () => {
           <div className="space-y-6">
             <div>
               <p className="text-blue-600 font-semibold tracking-wider text-sm mb-4 uppercase">
-                {t('about.label')}
+                {label}
               </p>
               <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6">
-                {t('about.title')} <span className="text-blue-600 italic">{t('about.titleHighlight')}</span>
+                {title} <span className="text-blue-600 italic">{titleHighlight}</span>
               </h2>
             </div>
 
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed text-lg">
-                <span className="font-semibold text-gray-900">{t('about.intro')}</span> {t('about.text1')}
+                <span className="font-semibold text-gray-900">{intro}</span> {text1}
               </p>
               <p className="text-gray-700 leading-relaxed">
-                {t('about.text2')}
+                {text2}
               </p>
               <p className="text-gray-700 leading-relaxed">
-                <span className="font-semibold text-gray-900">Dono con amore e piacere strumenti</span> metodologici ai miei studenti, al fine di poter dar loro degli input, che possano servir loro a migliorare la crescita con semplicità e serenità.
+                {text3}
               </p>
               <p className="text-gray-700 leading-relaxed">
-                {t('about.text4')}
+                {text4}
               </p>
             </div>
 
             {/* Clean quotes */}
             <div className="border-l-4 border-blue-500 pl-6 py-4 space-y-3 bg-blue-50 rounded-r-lg">
               <blockquote className="text-lg italic text-gray-700">
-                "{t('about.quote1')}"
+                "{quote1}"
               </blockquote>
               <blockquote className="text-lg italic text-blue-700 font-medium">
-                "{t('about.quote2')}"
+                "{quote2}"
               </blockquote>
             </div>
 

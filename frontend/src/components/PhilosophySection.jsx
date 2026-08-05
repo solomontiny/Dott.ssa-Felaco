@@ -1,21 +1,26 @@
 import React from 'react';
 
-const PhilosophySection = () => {
+const PhilosophySection = ({ content }) => {
+  const quote = content?.quote || '"Noi siamo ciò che mangiamo, diciamo e facciamo!"';
+  const text1 = content?.text1 || "Tutto dipende dal nostro modo di vedere, sentire, toccare, odorare e gustare.";
+  const text2 = content?.text2 || "Quest'ultima ha tutte le competenze per poter arrivare ai bisogni e alle esigenze delle persone, finanche a far arrivare alle persone stesse a costruire una guida interna, una volta che si è arrivati all'obiettivo desiderato. L'obiettivo desiderato è \"raggiungere un benessere fisico, mentale e dinamico\".";
+  const text3 = content?.text3 || "Solo con \"la conoscenza vera\" si può veramente capire l'importanza della prevenzione!";
+
   return (
     <section className="py-24 bg-gradient-to-br from-blue-500 to-teal-600 text-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl md:text-4xl font-serif italic mb-8 leading-relaxed">
-          "Noi siamo ciò che mangiamo, diciamo e facciamo!"
+          {quote}
         </h2>
         <div className="h-1 w-24 bg-white/50 mx-auto mb-8" />
         <p className="text-xl mb-6 text-white/95">
-          Tutto dipende dal nostro modo di vedere, sentire, toccare, odorare e gustare.
+          {text1}
         </p>
         <p className="text-lg mb-6 text-white/90 leading-relaxed">
-          Quest'ultima ha tutte le competenze per poter arrivare ai bisogni e alle esigenze delle persone, finanche a far arrivare alle persone stesse a costruire una guida interna, una volta che si è arrivati all'obiettivo desiderato. L'obiettivo desiderato è "raggiungere un benessere fisico, mentale e dinamico".
+          {text2}
         </p>
         <p className="text-lg font-medium text-white italic">
-          Solo con "la conoscenza vera" si può veramente capire l'importanza della prevenzione!
+          {text3}
         </p>
       </div>
     </section>

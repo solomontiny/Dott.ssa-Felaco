@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from './ui/button';
 import { useTranslation } from 'react-i18next';
 
-const HeroSection = () => {
+const HeroSection = ({ content }) => {
   const { t } = useTranslation();
   
   const scrollToSection = (section) => {
@@ -12,11 +12,19 @@ const HeroSection = () => {
     }
   };
 
+  const title = content?.title || t('hero.title');
+  const titleHighlight = content?.titleHighlight || t('hero.titleHighlight');
+  const subtitle = content?.subtitle || t('hero.subtitle');
+  const description = content?.description || t('hero.description');
+  const cta1 = content?.cta1 || t('hero.cta1');
+  const cta2 = content?.cta2 || t('hero.cta2');
+  const imageUrl = content?.image_url || "https://customer-assets.emergentagent.com/job_80398c3c-4f8a-434b-b923-133758dd4592/artifacts/fhkv7are_43f0764f-4653-4733-9f19-e168d39d573d.jpeg";
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="https://customer-assets.emergentagent.com/job_80398c3c-4f8a-434b-b923-133758dd4592/artifacts/fhkv7are_43f0764f-4653-4733-9f19-e168d39d573d.jpeg"
+          src={imageUrl}
           alt="Nutrition and wellness"
           className="w-full h-full object-cover object-center"
           style={{ imageRendering: 'crisp-edges' }}
@@ -27,28 +35,28 @@ const HeroSection = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 w-full">
         <div className="max-w-3xl">
           <p className="text-teal-600 font-semibold tracking-wider text-sm mb-6 uppercase">
-            {t('hero.subtitle')}
+            {subtitle}
           </p>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="block text-gray-900">{t('hero.title')}</span>
-            <span className="block text-teal-600">{t('hero.titleHighlight')}</span>
+            <span className="block text-gray-900">{title}</span>
+            <span className="block text-teal-600">{titleHighlight}</span>
           </h1>
           <p className="text-xl text-gray-700 mb-10 leading-relaxed max-w-2xl">
-            {t('hero.description')}
+            {description}
           </p>
           <div className="flex flex-wrap gap-4">
             <Button
               onClick={() => scrollToSection('#metodo')}
               className="bg-blue-500 hover:bg-teal-600 text-white px-8 py-6 rounded-full text-base font-medium transition-all duration-300 hover:shadow-lg"
             >
-              {t('hero.cta1')}
+              {cta1}
             </Button>
             <Button
               onClick={() => scrollToSection('#about')}
               variant="outline"
               className="border-2 border-blue-500 text-teal-700 hover:bg-blue-50 px-8 py-6 rounded-full text-base font-medium transition-all duration-300"
             >
-              {t('hero.cta2')}
+              {cta2}
             </Button>
           </div>
         </div>
