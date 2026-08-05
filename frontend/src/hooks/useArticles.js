@@ -63,7 +63,16 @@ export function useArticles() {
 
     try {
       const res = await db.articles.update(id, payload);
-      if (res.error) throw res.error;
+      if (res.error) {
+        console.error('Error updating article:', {
+          message: res.error.message,
+          details: res.error.details,
+          hint: res.error.hint,
+          code: res.error.code,
+          fullError: res.error,
+        });
+        throw res.error;
+      }
       return res.data;
     } finally {
       if (mountedRef.current) setLoading(false);

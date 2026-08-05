@@ -16,7 +16,13 @@ export function useHomepage() {
       setSections(data || []);
       return data;
     } catch (error) {
-      console.error('Error fetching homepage sections:', error);
+      console.error('Error fetching homepage sections:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        fullError: error,
+      });
       return [];
     } finally {
       setLoading(false);
@@ -56,7 +62,13 @@ export function useHomepage() {
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Error updating homepage section:', error);
+      console.error('Error updating homepage section:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        fullError: error,
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -79,7 +91,13 @@ export function useHomepage() {
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Error creating homepage section:', error);
+      console.error('Error creating homepage section:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        fullError: error,
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -97,7 +115,13 @@ export function useHomepage() {
       if (error) throw error;
       return true;
     } catch (error) {
-      console.error('Error deleting homepage section:', error);
+      console.error('Error deleting homepage section:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        fullError: error,
+      });
       throw error;
     } finally {
       setLoading(false);
