@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   LogOut, Plus, Edit, Trash2, Eye, EyeOff,
-  FileText, Image as ImageIcon, Save, X, Layout, BarChart3, ChevronUp, ChevronDown
+  FileText, Image as ImageIcon, Save, X, Layout, BarChart3
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useArticles } from '../hooks/useArticles';
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
 
   const { user, loading: authLoading, signOut } = useAuth();
   const { list: listArticles, create: createArticle, update: updateArticle, remove: removeArticle } = useArticles();
-  const { fetchAllSections, updateSection, reorderSections } = useHomepage();
+  const { fetchAllSections, updateSection } = useHomepage();
   const adminEmail = user?.email || 'Admin';
 
   const fetchArticles = useCallback(async (isActive = () => true) => {
@@ -303,33 +303,6 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error saving section:', error);
       alert('Failed to save section: ' + (error.message || JSON.stringify(error)));
-    }
-  };
-
-  const handleMoveSection = async (index, direction) => {
-    const newSections = [...homepageSections];
-    const targetIndex = index + direction;
-    
-    if (targetIndex < 0 || targetIndex >= newSections.length) return;
-    
-    const temp = newSections[index];
-    newSections[index] = newSections[targetIndex];
-    newSections[targetIndex] = temp;
-    
-    setHomepageSections(newSections);
-    try {
-      await reorderSections(newSections);
-    } catch (error) {
-      console.error('Error reordering sections:', error);
-    }
-  };
-
-  const toggleSectionActive = async (section) => {
-    try {
-      await updateSection(section.id, { is_active: !section.is_active });
-      await fetchHomepage();
-    } catch (error) {
-      console.error('Error toggling section:', error);
     }
   };
 
@@ -674,44 +647,13 @@ const AdminDashboard = () => {
                       key={section.id}
                       className="bg-white rounded-lg border border-gray-200 p-6 flex items-center justify-between group"
                     >
-                      <div className="flex items-center space-x-4">
-                        <div className="flex flex-col space-y-1">
-                          <button
-                            onClick={() => handleMoveSection(index, -1)}
-                            className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-600"
-                            disabled={index === 0}
-                          >
-                            <ChevronUp className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleMoveSection(index, 1)}
-                            className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-600"
-                            disabled={index === homepageSections.length - 1}
-                          >
-                            <ChevronDown className="w-4 h-4" />
-                          </button>
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 uppercase">
-                            {section.section_key.replace(/_/g, ' ')}
-                          </h3>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <span className={`px-2 py-0.5 text-xs rounded-full ${section.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                              {section.is_active ? 'Active' : 'Hidden'}
-                            </span>
-                            <span className="text-xs text-gray-500">Order: {section.order_index}</span>
-                          </div>
-                        </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 uppercase">
+                          {section.section_key.replace(/_/g, ' ')}
+                        </h3>
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => toggleSectionActive(section)}
-                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                          title={section.is_active ? 'Hide Section' : 'Show Section'}
-                        >
-                          {section.is_active ? <Eye className="w-5 h-5 text-blue-600" /> : <EyeOff className="w-5 h-5 text-gray-400" />}
-                        </button>
                         <button
                           onClick={() => handleEditSection(section)}
                           className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
