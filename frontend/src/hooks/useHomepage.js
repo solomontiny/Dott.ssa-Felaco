@@ -39,6 +39,12 @@ export function useHomepage() {
       return data;
     } catch (error) {
       console.error('Error fetching all homepage sections:', error);
+      console.error(JSON.stringify(error, null, 2));
+      console.error(error);
+      console.error(error.message);
+      console.error(error.details);
+      console.error(error.hint);
+      console.error(error.code);
       return [];
     } finally {
       setLoading(false);
@@ -48,6 +54,7 @@ export function useHomepage() {
   const updateSection = useCallback(async (id, payload) => {
     setLoading(true);
     try {
+      console.log('Updating section:', id, payload);
       const { data, error } = await supabase
         .from('homepage_content')
         .update({
@@ -58,7 +65,11 @@ export function useHomepage() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase update error:', error);
+        throw error;
+      }
+      console.log('Update result:', data);
       return data;
     } catch (error) {
       console.error('Error updating homepage section:', error);

@@ -295,6 +295,7 @@ const AdminDashboard = () => {
 
   const handleSaveSection = async (e) => {
     e.preventDefault();
+    console.log('Saving section:', editingSection?.id, sectionFormData);
     try {
       await updateSection(editingSection.id, { content: sectionFormData });
       await fetchHomepage();
