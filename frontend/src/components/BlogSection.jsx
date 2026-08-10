@@ -15,6 +15,7 @@ const categories = [
 ];
 
 const BlogSection = ({ content }) => {
+  console.log('BlogSection: rendering with content:', content);
   const [posts, setPosts] = useState([]);
   const { i18n, t } = useTranslation();
 
@@ -31,8 +32,10 @@ const BlogSection = ({ content }) => {
       try {
         // Fetch all published articles, regardless of language
         const data = await list({ limit: 4, published_only: true });
+        console.log('BlogSection: articles data', data);
         if (active) setPosts(data || []);
-      } catch {
+      } catch (e) {
+        console.error('BlogSection: error fetching articles', e);
         if (active) setPosts([]);
       }
     };

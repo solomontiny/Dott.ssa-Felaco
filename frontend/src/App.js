@@ -1,13 +1,14 @@
 import React from "react";
 import "./App.css";
 import "./i18n/config";
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate, useSearchParams } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import ThreeFocusSection from "./components/ThreeFocusSection";
 import AboutSection from "./components/AboutSection";
 import PhilosophySection from "./components/PhilosophySection";
 import WhatWeDoSection from "./components/WhatWeDoSection";
+import ServicesSection from "./components/ServicesSection";
 import QASection from "./components/QASection";
 import ConsultationForm from "./components/ConsultationForm";
 import TestimonialsSection from "./components/TestimonialsSection";
@@ -29,10 +30,29 @@ import { useHomepage } from "./hooks/useHomepage";
 
 function MainWebsite() {
   const { sections, fetchSections } = useHomepage();
+  const [searchParams] = useSearchParams();
 
   React.useEffect(() => {
     fetchSections("it");
   }, [fetchSections]);
+
+  React.useEffect(() => {
+    const section = searchParams.get('section');
+    if (section) {
+      const scrollToSection = () => {
+        const element = document.getElementById(section);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          // If not found yet, wait for dynamic loading
+          setTimeout(scrollToSection, 500);
+        }
+      };
+      scrollToSection();
+    }
+  }, [searchParams, sections]);
+
+  console.log('MainWebsite sections:', sections);
 
   const SECTION_COMPONENTS = {
     hero: HeroSection,
@@ -40,6 +60,7 @@ function MainWebsite() {
     about: AboutSection,
     philosophy: PhilosophySection,
     what_we_do: WhatWeDoSection,
+    services: ServicesSection,
     qa: QASection,
     consultation: ConsultationForm,
     testimonials: TestimonialsSection,
@@ -49,31 +70,21 @@ function MainWebsite() {
     final_cta: FinalCtaSection,
   };
 
+  const SECTION_ORDER = [
+    'hero', 'three_focus', 'about', 'philosophy', 'what_we_do',
+    'services', 'qa', 'consultation', 'testimonials', 'appointment',
+    'blog', 'contact', 'final_cta'
+  ];
+
   return (
     <>
       <Navbar />
-      {sections.length > 0 ? (
-        sections.map((section) => {
-          const Component = SECTION_COMPONENTS[section.section_key];
-          if (!Component) return null;
-          return <Component key={section.id} content={section.content} />;
-        })
-      ) : (
-        <>
-          <HeroSection />
-          <ThreeFocusSection />
-          <AboutSection />
-          <PhilosophySection />
-          <WhatWeDoSection />
-          <QASection />
-          <ConsultationForm />
-          <TestimonialsSection />
-          <AppointmentBooking />
-          <BlogSection />
-          <ContactSection />
-          <FinalCtaSection />
-        </>
-      )}
+      {SECTION_ORDER.map((sectionKey) => {
+        const Component = SECTION_COMPONENTS[sectionKey];
+        if (!Component) return null;
+        const dbSection = sections.find(s => s.section_key === sectionKey);
+        return <Component key={sectionKey} content={dbSection?.content} />;
+      })}
       <Footer />
       <WhatsAppWidget />
     </>

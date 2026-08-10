@@ -71,7 +71,8 @@
     "test": "craco test",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "deploy:cloudflare": "npm run build && wrangler deploy"
+    "deploy:cloudflare": "npm run build && wrangler deploy",
+    "add-blog-section": "node scripts/add-blog-section.js"
   },
   "browserslist": {
     "production": [

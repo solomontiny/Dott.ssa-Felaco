@@ -13,7 +13,31 @@ export function useHomepage() {
         .select('*');
 
       if (error) throw error;
-      setSections(data || []);
+      
+      let sections = data || [];
+      if (!sections.find(s => s.section_key === 'blog')) {
+        sections.push({
+          id: 'temp-blog',
+          section_key: 'blog',
+          content: {
+            label: 'Articoli',
+            title: 'Ultimi Articoli',
+            cta: 'Vedi tutti gli articoli'
+          }
+        });
+      }
+      if (!sections.find(s => s.section_key === 'services')) {
+        sections.push({
+          id: 'temp-services',
+          section_key: 'services',
+          content: {
+            label: 'SERVIZI',
+            title: 'Cosa trovi qui',
+            subtitle: 'Benessere Bio-Psico-Sociale'
+          }
+        });
+      }
+      setSections(sections);
       return data;
     } catch (error) {
       console.error('Error fetching homepage sections:', {

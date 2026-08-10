@@ -2,19 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Globe, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const navLinks = [
-    { label: t('nav.home'), href: '#home' },
-    { label: t('nav.about'), href: '#about' },
-    { label: t('nav.whatWeDo'), href: '#what-we-do' },
-    { label: t('nav.qa'), href: '#qa' },
-    { label: t('nav.consultation'), href: '#consultation' },
-    { label: t('nav.contact'), href: '#contact' }
+    { label: t('nav.home'), href: '/', section: 'home' },
+    { label: t('nav.about'), href: '/', section: 'about' },
+    { label: t('nav.whatWeDo'), href: '/', section: 'servizi' },
+    { label: t('nav.qa'), href: '/', section: 'qa' },
+    { label: t('nav.consultation'), href: '/', section: 'consultation' },
+    { label: 'Blog', href: '/articles', section: null },
+    { label: t('nav.contact'), href: '/', section: 'contact' }
   ];
 
   const languages = [
@@ -35,12 +39,18 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (href) => {
-    if (href.startsWith('#')) {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+  const handleNav = (link) => {
+    if (link.section) {
+      if (location.pathname === '/') {
+        const element = document.getElementById(link.section);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        navigate(`/?section=${link.section}`);
       }
+    } else {
+      navigate(link.href);
     }
   };
 
@@ -57,7 +67,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => handleNav({ href: '/', section: 'home' })}>
             <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
               <div className="w-6 h-6 border-2 border-white rounded-full" />
             </div>
@@ -70,7 +80,7 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <button
                 key={link.label}
-                onClick={() => scrollToSection(link.href)}
+                onClick={() => handleNav(link)}
                 className="text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors duration-200"
               >
                 {link.label}
@@ -108,7 +118,7 @@ const Navbar = () => {
             </div>
             
             <Button
-              onClick={() => scrollToSection('#appointment')}
+              onClick={() => handleNav({ href: '/', section: 'appointment' })}
               className="bg-blue-500 hover:bg-teal-600 text-white px-6 rounded-full"
             >
               {t('nav.appointment')}

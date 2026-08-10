@@ -2,8 +2,8 @@ import React from 'react';
 import { BookOpen, Heart, Dumbbell, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 
-const ServicesSection = () => {
-  const services = [
+const ServicesSection = ({ content }) => {
+  const services = content?.services || [
     {
       icon: 'bookOpen',
       title: 'Training educativo alimentare',
@@ -21,6 +21,9 @@ const ServicesSection = () => {
     }
   ];
 
+  const label = content?.label || 'SERVIZI';
+  const title = content?.title || 'Cosa trovi qui';
+  const subtitle = content?.subtitle || 'Benessere Bio-Psico-Sociale';
   const getIcon = (iconName) => {
     if (iconName === 'bookOpen') return BookOpen;
     if (iconName === 'heart') return Heart;
@@ -33,12 +36,12 @@ const ServicesSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-teal-600 font-medium tracking-wider text-sm mb-4">
-            SERVIZI
+            {label}
           </p>
           <h2 className="text-4xl md:text-5xl font-serif text-gray-900 mb-4">
-            Cosa trovi qui
+            {title}
           </h2>
-          <p className="text-xl text-gray-600">Benessere Bio-Psico-Sociale</p>
+          <p className="text-xl text-gray-600">{subtitle}</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
