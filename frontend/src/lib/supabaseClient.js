@@ -57,6 +57,14 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 });
 
+export const publicSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+});
+
 function ensureSupabaseClient() {
   if (!hasSupabaseConfig || hasLikelyBrokenKey) {
     throw new Error('Supabase is not correctly configured. Replace the malformed REACT_APP_SUPABASE_ANON_KEY in frontend/.env with the project anon key from the Supabase dashboard.');

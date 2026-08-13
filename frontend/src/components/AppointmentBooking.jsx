@@ -8,7 +8,7 @@ import PhoneInput from 'react-phone-input-2';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import 'react-phone-input-2/lib/style.css';
-import { supabase } from '../lib/supabaseClient';
+import { publicSupabase } from '../lib/supabaseClient';
 
 const AppointmentBooking = () => {
   const { t } = useTranslation();
@@ -59,27 +59,64 @@ const AppointmentBooking = () => {
 
     try {
       const appointmentData = {
-        ...formData,
-        date: formData.date.toISOString().split('T')[0]
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        appointment_date: formData.date.toISOString().split('T')[0],
+        appointment_time: formData.time,
+        appointment_type: formData.type,
+        notes: formData.notes,
+        status: 'new',
+        created_at: new Date().toISOString()
       };
       
-      const { data, error } = await supabase.from('appointments').insert(appointmentData).select().single();
-      
-      if (error) throw error;
-      if (data) {
-        setStatus({ type: 'success', message: t('appointment.form.success') });
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          date: new Date(),
-          time: '',
-          type: '',
-          notes: ''
-        });
+      console.log("APPOINTMENT PAYLOAD:", appointmentData);
+      const { error } = await publicSupabase.from('appointments').insert(appointmentData);
+
+      if (error) {
+        console.error("APPOINTMENT BOOKING ERROR:", error);
+        throw error;
       }
+
+      // WhatsApp Redirect Logic
+      const whatsappNumber = '393450503440';
+      const message = `Hello Dott.ssa Felaco,
+
+I would like to book an appointment.
+
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+Date: ${formData.date.toLocaleDateString()}
+Time: ${formData.time}
+Consultation Type: ${formData.type}
+Additional Notes: ${formData.notes}
+
+Please confirm my appointment.`;
+        
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+
+      setStatus({ type: 'success', message: t('appointment.form.success') });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        date: new Date(),
+        time: '',
+        type: '',
+        notes: ''
+      });
     } catch (error) {
-      setStatus({ type: 'error', message: t('appointment.form.error') });
+      console.error("APPOINTMENT BOOKING ERROR:", {
+        message: error?.message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint,
+      });
+      setStatus({ 
+        type: 'error', 
+        message: `Booking error: ${error?.message || 'Please try again.'} (Code: ${error?.code || 'N/A'})`
+      });
     } finally {
       setIsSubmitting(false);
     }
